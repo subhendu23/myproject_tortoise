@@ -24,6 +24,7 @@ Data Stack size         : 2048
 
 // Standard Input/Output functions
 #include <stdio.h>
+#include <stdint.h>
 
 // Clock System initialization function
 #include "clock_init.h"
@@ -78,6 +79,14 @@ tcc0_init();
 while (1)
       {
       // Place your code here
-
+	  if(getTime() & 0x300)
+	  {
+		  PORTB.OUT=0xF0;
+	  }
+	  else
+	  {
+		PORTB.OUT=0x00;	
+	  }
+	  
       }
 }

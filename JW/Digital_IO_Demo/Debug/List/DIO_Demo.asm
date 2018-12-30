@@ -1293,6 +1293,7 @@ __CLEAR_SRAM:
 ;
 ;// Standard Input/Output functions
 ;#include <stdio.h>
+;#include <stdint.h>
 ;
 ;// Clock System initialization function
 ;#include "clock_init.h"
@@ -1306,74 +1307,91 @@ __CLEAR_SRAM:
 ;// Declare your global variables here
 ;
 ;void main(void)
-; 0000 0028 {
+; 0000 0029 {
 
 	.CSEG
 _main:
 ; .FSTART _main
-; 0000 0029 // Declare your local variables here
-; 0000 002A unsigned char n;
-; 0000 002B 
-; 0000 002C // Interrupt system initialization
-; 0000 002D // Optimize for speed
-; 0000 002E #pragma optsize-
-; 0000 002F // Make sure the interrupts are disabled
-; 0000 0030 #asm("cli")
+; 0000 002A // Declare your local variables here
+; 0000 002B unsigned char n;
+; 0000 002C 
+; 0000 002D // Interrupt system initialization
+; 0000 002E // Optimize for speed
+; 0000 002F #pragma optsize-
+; 0000 0030 // Make sure the interrupts are disabled
+; 0000 0031 #asm("cli")
 ;	n -> R17
 	CLI
-; 0000 0031 // Low level interrupt: Off
-; 0000 0032 // Round-robin scheduling for low level interrupt: Off
-; 0000 0033 // Medium level interrupt: Off
-; 0000 0034 // High level interrupt: On
-; 0000 0035 // The interrupt vectors will be placed at the start of the Application FLASH section
-; 0000 0036 n=(PMIC.CTRL & (~(PMIC_RREN_bm | PMIC_IVSEL_bm | PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm))) |
-; 0000 0037 	PMIC_HILVLEN_bm;
+; 0000 0032 // Low level interrupt: Off
+; 0000 0033 // Round-robin scheduling for low level interrupt: Off
+; 0000 0034 // Medium level interrupt: Off
+; 0000 0035 // High level interrupt: On
+; 0000 0036 // The interrupt vectors will be placed at the start of the Application FLASH section
+; 0000 0037 n=(PMIC.CTRL & (~(PMIC_RREN_bm | PMIC_IVSEL_bm | PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm))) |
+; 0000 0038 	PMIC_HILVLEN_bm;
 	LDS  R30,162
 	ANDI R30,LOW(0x38)
 	ORI  R30,4
 	MOV  R17,R30
-; 0000 0038 CCP=CCP_IOREG_gc;
+; 0000 0039 CCP=CCP_IOREG_gc;
 	LDI  R30,LOW(216)
 	OUT  0x34,R30
-; 0000 0039 PMIC.CTRL=n;
+; 0000 003A PMIC.CTRL=n;
 	STS  162,R17
-; 0000 003A // Set the default priority for round-robin scheduling
-; 0000 003B PMIC.INTPRI=0x00;
+; 0000 003B // Set the default priority for round-robin scheduling
+; 0000 003C PMIC.INTPRI=0x00;
 	LDI  R30,LOW(0)
 	STS  161,R30
-; 0000 003C // Restore optimization for size if needed
-; 0000 003D #pragma optsize_default
-; 0000 003E 
-; 0000 003F // System clocks initialization
-; 0000 0040 system_clocks_init();
+; 0000 003D // Restore optimization for size if needed
+; 0000 003E #pragma optsize_default
+; 0000 003F 
+; 0000 0040 // System clocks initialization
+; 0000 0041 system_clocks_init();
 	RCALL _system_clocks_init
-; 0000 0041 
-; 0000 0042 // Ports initialization
-; 0000 0043 ports_init();
+; 0000 0042 
+; 0000 0043 // Ports initialization
+; 0000 0044 ports_init();
 	RCALL _ports_init
-; 0000 0044 
-; 0000 0045 // Virtual Ports initialization
-; 0000 0046 vports_init();
+; 0000 0045 
+; 0000 0046 // Virtual Ports initialization
+; 0000 0047 vports_init();
 	RCALL _vports_init
-; 0000 0047 
-; 0000 0048 // Timer/Counter TCC0 initialization
-; 0000 0049 tcc0_init();
+; 0000 0048 
+; 0000 0049 // Timer/Counter TCC0 initialization
+; 0000 004A tcc0_init();
 	RCALL _tcc0_init
-; 0000 004A 
-; 0000 004B // Globally enable interrupts
-; 0000 004C #asm("sei")
+; 0000 004B 
+; 0000 004C // Globally enable interrupts
+; 0000 004D #asm("sei")
 	SEI
-; 0000 004D 
-; 0000 004E while (1)
+; 0000 004E 
+; 0000 004F while (1)
 _0x3:
-; 0000 004F       {
-; 0000 0050       // Place your code here
-; 0000 0051 
-; 0000 0052       }
-	RJMP _0x3
-; 0000 0053 }
+; 0000 0050       {
+; 0000 0051       // Place your code here
+; 0000 0052 	  if(getTime() & 0x300)
+	RCALL _getTime
+	ANDI R31,HIGH(0x300)
+	BREQ _0x6
+; 0000 0053 	  {
+; 0000 0054 		  PORTB.OUT=0xF0;
+	LDI  R30,LOW(240)
+	RJMP _0x9
+; 0000 0055 	  }
+; 0000 0056 	  else
 _0x6:
-	RJMP _0x6
+; 0000 0057 	  {
+; 0000 0058 		PORTB.OUT=0x00;
+	LDI  R30,LOW(0)
+_0x9:
+	STS  1572,R30
+; 0000 0059 	  }
+; 0000 005A 
+; 0000 005B       }
+	RJMP _0x3
+; 0000 005C }
+_0x8:
+	RJMP _0x8
 ; .FEND
 ;/*******************************************************
 ;System clock initialization created by the
@@ -2135,7 +2153,7 @@ _vports_init:
 ;
 ;// I/O Registers definitions
 ;#include <xmega128b1.h>
-;
+;#include <stdint.h>
 ;// Disable a Timer/Counter type TC0
 ;void tc0_disable(TC0_t *ptc)
 ; 0003 000F {
@@ -2330,27 +2348,103 @@ _0x2060001:
 	RET
 ; .FEND
 ;
+;static uint32_t msCounter=0;
+;
 ;// Timer/Counter TCC0 Overflow/Underflow interrupt service routine
 ;interrupt [TCC0_OVF_vect] void tcc0_overflow_isr(void)
-; 0003 007A {
+; 0003 007C {
 _tcc0_overflow_isr:
 ; .FSTART _tcc0_overflow_isr
-; 0003 007B // Write your code here
-; 0003 007C 
-; 0003 007D }
+	ST   -Y,R22
+	ST   -Y,R23
+	ST   -Y,R26
+	ST   -Y,R27
+	ST   -Y,R30
+	ST   -Y,R31
+	IN   R30,SREG
+	ST   -Y,R30
+; 0003 007D // Write your code here
+; 0003 007E 	msCounter++;
+	LDI  R26,LOW(_msCounter_G003)
+	LDI  R27,HIGH(_msCounter_G003)
+	RCALL __GETD1P_INC
+	__SUBD1N -1
+	RCALL __PUTDP1_DEC
+; 0003 007F }
+	LD   R30,Y+
+	OUT  SREG,R30
+	LD   R31,Y+
+	LD   R30,Y+
+	LD   R27,Y+
+	LD   R26,Y+
+	LD   R23,Y+
+	LD   R22,Y+
 	RETI
 ; .FEND
 ;
+;uint32_t getTime(void){
+; 0003 0081 uint32_t getTime(void){
+_getTime:
+; .FSTART _getTime
+; 0003 0082 
+; 0003 0083 	unsigned char s;
+; 0003 0084 	uint32_t tempValHolder;
+; 0003 0085 	// Save interrupts enabled/disabled state
+; 0003 0086 	s=SREG;
+	SBIW R28,4
+	ST   -Y,R17
+;	s -> R17
+;	tempValHolder -> Y+1
+	IN   R17,63
+; 0003 0087 	// Disable interrupts
+; 0003 0088 	#asm("cli")
+	CLI
+; 0003 0089 
+; 0003 008A 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
+; 0003 008B 	tempValHolder=msCounter;
+	LDS  R30,_msCounter_G003
+	LDS  R31,_msCounter_G003+1
+	LDS  R22,_msCounter_G003+2
+	LDS  R23,_msCounter_G003+3
+	__PUTD1S 1
+; 0003 008C 
+; 0003 008D 	//restore interrupts enabled/disabled state
+; 0003 008E 	SREG=s;
+	OUT  0x3F,R17
+; 0003 008F 
+; 0003 0090 }
+	LDD  R17,Y+0
+	ADIW R28,5
+	RET
+; .FEND
 
 	.CSEG
 
 	.CSEG
 
 	.CSEG
+
+	.DSEG
+_msCounter_G003:
+	.BYTE 0x4
 
 	.CSEG
 ;RUNTIME LIBRARY
 
 	.CSEG
+__GETD1P_INC:
+	LD   R30,X+
+	LD   R31,X+
+	LD   R22,X+
+	LD   R23,X+
+	RET
+
+__PUTDP1_DEC:
+	ST   -X,R23
+	ST   -X,R22
+	ST   -X,R31
+	ST   -X,R30
+	RET
+
 ;END OF CODE MARKER
 __END_OF_CODE:
