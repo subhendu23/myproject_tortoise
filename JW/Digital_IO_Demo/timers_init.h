@@ -12,7 +12,11 @@ Project :
 
 // Disable a Timer/Counter type TC0
 void tc0_disable(TC0_t *ptc);
+// Disable a Timer/Counter type TC1
+void tc1_disable(TC1_t *ptc);
 // Timer/Counter TCC0 initialization
 void tcc0_init(void);
+// Timer/Counter TCC1 initialization
+void tcc1_init(void);
 uint32_t getTime(void);
 #endif

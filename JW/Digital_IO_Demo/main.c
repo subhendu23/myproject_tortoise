@@ -29,6 +29,9 @@ Data Stack size         : 2048
 // Clock System initialization function
 #include "clock_init.h"
 
+// Event System initialization function
+#include "event_system_init.h"
+
 // I/O Ports initialization function
 #include "ports_init.h"
 
@@ -64,6 +67,9 @@ PMIC.INTPRI=0x00;
 // System clocks initialization
 system_clocks_init();
 
+// Event system initialization
+event_system_init();
+
 // Ports initialization
 ports_init();
 
@@ -73,13 +79,16 @@ vports_init();
 // Timer/Counter TCC0 initialization
 tcc0_init();
 
+// Timer/Counter TCC1 initialization
+tcc1_init();
+
 // Globally enable interrupts
 #asm("sei")
 
 while (1)
       {
       // Place your code here
-	  if(getTime() & 0x200)
+	  if((PORTE.IN & 0x01) && getTime() & 0x100)
 	  {
 		  PORTB.OUT=0xF0;
 	  }

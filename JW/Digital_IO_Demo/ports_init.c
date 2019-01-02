@@ -25,10 +25,10 @@ PORTA.OUT=0x00;
 // Pin6: Input
 // Pin7: Input
 PORTA.DIR=0x00;
-// Pin0 Output/Pull configuration: Totempole/No
-// Pin0 Input/Sense configuration: Sense both edges
+// Pin0 Output/Pull configuration: Totempole/Pull-up (on input)
+// Pin0 Input/Sense configuration: Sense falling edge
 // Pin0 Inverted: Off
-PORTA.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
+PORTA.PIN0CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_FALLING_gc;
 // Pin1 Output/Pull configuration: Totempole/No
 // Pin1 Input/Sense configuration: Sense both edges
 // Pin1 Inverted: Off
@@ -269,22 +269,22 @@ PORTE.OUT=0x00;
 // Pin6: Input
 // Pin7: Input
 PORTE.DIR=0x20;
-// Pin0 Output/Pull configuration: Totempole/No
+// Pin0 Output/Pull configuration: Totempole/Pull-up (on input)
 // Pin0 Input/Sense configuration: Sense both edges
 // Pin0 Inverted: Off
-PORTE.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-// Pin1 Output/Pull configuration: Totempole/No
+PORTE.PIN0CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
+// Pin1 Output/Pull configuration: Totempole/Pull-up (on input)
 // Pin1 Input/Sense configuration: Sense both edges
 // Pin1 Inverted: Off
-PORTE.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-// Pin2 Output/Pull configuration: Totempole/No
+PORTE.PIN1CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
+// Pin2 Output/Pull configuration: Totempole/Pull-up (on input)
 // Pin2 Input/Sense configuration: Sense both edges
 // Pin2 Inverted: Off
-PORTE.PIN2CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-// Pin3 Output/Pull configuration: Totempole/No
+PORTE.PIN2CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
+// Pin3 Output/Pull configuration: Totempole/Pull-up (on input)
 // Pin3 Input/Sense configuration: Sense both edges
 // Pin3 Inverted: Off
-PORTE.PIN3CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
+PORTE.PIN3CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
 // Pin4 Output/Pull configuration: Totempole/No
 // Pin4 Input/Sense configuration: Sense both edges
 // Pin4 Inverted: Off

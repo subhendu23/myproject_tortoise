@@ -12,13 +12,13 @@
 ;#include <stdint.h>
 ;// Disable a Timer/Counter type TC0
 ;void tc0_disable(TC0_t *ptc)
-; 0003 000F {
+; 0004 000F {
 
 	.CSEG
 ;PCODE: $00000000 VOL: 0
 ;PCODE: $00000001 VOL: 0
-; 0003 0010 // Timer/Counter off
-; 0003 0011 ptc->CTRLA=TC_CLKSEL_OFF_gc;
+; 0004 0010 // Timer/Counter off
+; 0004 0011 ptc->CTRLA=TC_CLKSEL_OFF_gc;
 ;PCODE: $00000002 VOL: 0
 ;PCODE: $00000003 VOL: 0
 ;PCODE: $00000004 VOL: 0
@@ -26,235 +26,374 @@
 ;PCODE: $00000005 VOL: 0
 ;PCODE: $00000006 VOL: 0
 ;PCODE: $00000007 VOL: 0
-; 0003 0012 // Issue a reset command
-; 0003 0013 ptc->CTRLFSET=TC_CMD_RESET_gc;
+; 0004 0012 // Issue a reset command
+; 0004 0013 ptc->CTRLFSET=TC_CMD_RESET_gc;
 ;PCODE: $00000008 VOL: 0
 ;PCODE: $00000009 VOL: 0
 ;PCODE: $0000000A VOL: 0
 ;PCODE: $0000000B VOL: 0
-; 0003 0014 }
+; 0004 0014 }
 ;PCODE: $0000000C VOL: 0
 ;PCODE: $0000000D VOL: 0
 ;PCODE: $0000000E VOL: 0
 ;
-;// Timer/Counter TCC0 initialization
-;void tcc0_init(void)
-; 0003 0018 {
+;// Disable a Timer/Counter type TC1
+;void tc1_disable(TC1_t *ptc)
+; 0004 0018 {
 ;PCODE: $0000000F VOL: 0
 ;PCODE: $00000010 VOL: 0
-; 0003 0019 unsigned char s;
-; 0003 001A unsigned char n;
-; 0003 001B 
-; 0003 001C // Note: The correct PORTC direction for the Compare Channels
-; 0003 001D // outputs is configured in the ports_init function.
-; 0003 001E 
-; 0003 001F // Save interrupts enabled/disabled state
-; 0003 0020 s=SREG;
+; 0004 0019 // Timer/Counter off
+; 0004 001A ptc->CTRLA=TC_CLKSEL_OFF_gc;
 ;PCODE: $00000011 VOL: 0
 ;PCODE: $00000012 VOL: 0
+;PCODE: $00000013 VOL: 0
+;	*ptc -> R16,R17
+;PCODE: $00000014 VOL: 0
+;PCODE: $00000015 VOL: 0
+;PCODE: $00000016 VOL: 0
+; 0004 001B // Issue a reset command
+; 0004 001C ptc->CTRLFSET=TC_CMD_RESET_gc;
+;PCODE: $00000017 VOL: 0
+;PCODE: $00000018 VOL: 0
+;PCODE: $00000019 VOL: 0
+;PCODE: $0000001A VOL: 0
+; 0004 001D }
+;PCODE: $0000001B VOL: 0
+;PCODE: $0000001C VOL: 0
+;PCODE: $0000001D VOL: 0
+;
+;// Timer/Counter TCC0 initialization
+;void tcc0_init(void)
+; 0004 0021 {
+;PCODE: $0000001E VOL: 0
+;PCODE: $0000001F VOL: 0
+; 0004 0022 unsigned char s;
+; 0004 0023 unsigned char n;
+; 0004 0024 
+; 0004 0025 // Note: The correct PORTC direction for the Compare Channels
+; 0004 0026 // outputs is configured in the ports_init function.
+; 0004 0027 
+; 0004 0028 // Save interrupts enabled/disabled state
+; 0004 0029 s=SREG;
+;PCODE: $00000020 VOL: 0
+;PCODE: $00000021 VOL: 0
 ;	s -> R17
 ;	n -> R16
-;PCODE: $00000013 VOL: 0
-;PCODE: $00000014 VOL: 0
-; 0003 0021 // Disable interrupts
-; 0003 0022 #asm("cli")
-;PCODE: $00000015 VOL: 0
-; 0003 0023 
-; 0003 0024 // Disable and reset the timer/counter just to be sure
-; 0003 0025 tc0_disable(&TCC0);
-;PCODE: $00000016 VOL: 1
-;PCODE: $00000017 VOL: 0
-; 0003 0026 // Clock source: ClkPer/1
-; 0003 0027 TCC0.CTRLA=TC_CLKSEL_DIV1_gc;
-;PCODE: $00000018 VOL: 0
-;PCODE: $00000019 VOL: 1
-; 0003 0028 // Mode: Normal Operation, Overflow Int./Event on TOP
-; 0003 0029 // Compare/Capture on channel A: Off
-; 0003 002A // Compare/Capture on channel B: Off
-; 0003 002B // Compare/Capture on channel C: Off
-; 0003 002C // Compare/Capture on channel D: Off
-; 0003 002D TCC0.CTRLB=(0<<TC0_CCDEN_bp) | (0<<TC0_CCCEN_bp) | (0<<TC0_CCBEN_bp) | (0<<TC0_CCAEN_bp) |
-; 0003 002E 	TC_WGMODE_NORMAL_gc;
-;PCODE: $0000001A VOL: 0
-;PCODE: $0000001B VOL: 1
-; 0003 002F // Capture event source: None
-; 0003 0030 // Capture event action: None
-; 0003 0031 TCC0.CTRLD=TC_EVACT_OFF_gc | TC_EVSEL_OFF_gc;
-;PCODE: $0000001C VOL: 0
-;PCODE: $0000001D VOL: 1
-; 0003 0032 
-; 0003 0033 // Set Timer/Counter in Normal mode
-; 0003 0034 TCC0.CTRLE=TC_BYTEM_NORMAL_gc;
-;PCODE: $0000001E VOL: 0
-;PCODE: $0000001F VOL: 1
-; 0003 0035 
-; 0003 0036 // Overflow interrupt: High Level
-; 0003 0037 // Error interrupt: Disabled
-; 0003 0038 TCC0.INTCTRLA=TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_HI_gc;
-;PCODE: $00000020 VOL: 0
-;PCODE: $00000021 VOL: 1
-; 0003 0039 
-; 0003 003A // Compare/Capture channel A interrupt: Disabled
-; 0003 003B // Compare/Capture channel B interrupt: Disabled
-; 0003 003C // Compare/Capture channel C interrupt: Disabled
-; 0003 003D // Compare/Capture channel D interrupt: Disabled
-; 0003 003E TCC0.INTCTRLB=TC_CCDINTLVL_OFF_gc | TC_CCCINTLVL_OFF_gc | TC_CCBINTLVL_OFF_gc | TC_CCAINTLVL_OFF_gc;
 ;PCODE: $00000022 VOL: 0
-;PCODE: $00000023 VOL: 1
-; 0003 003F 
-; 0003 0040 // High resolution extension: Off
-; 0003 0041 HIRESC.CTRLA&= ~HIRES_HREN0_bm;
-;PCODE: $00000024 VOL: 1
-;PCODE: $00000025 VOL: 0
-;PCODE: $00000026 VOL: 1
-; 0003 0042 
-; 0003 0043 // Advanced Waveform Extension initialization
-; 0003 0044 // Optimize for speed
-; 0003 0045 #pragma optsize-
-; 0003 0046 // Disable locking the AWEX configuration registers just to be sure
-; 0003 0047 n=MCU.AWEXLOCK & (~MCU_AWEXCLOCK_bm);
-;PCODE: $00000027 VOL: 1
-;PCODE: $00000028 VOL: 0
+;PCODE: $00000023 VOL: 0
+; 0004 002A // Disable interrupts
+; 0004 002B #asm("cli")
+;PCODE: $00000024 VOL: 0
+; 0004 002C 
+; 0004 002D // Disable and reset the timer/counter just to be sure
+; 0004 002E tc0_disable(&TCC0);
+;PCODE: $00000025 VOL: 1
+;PCODE: $00000026 VOL: 0
+; 0004 002F // Clock source: ClkPer/1
+; 0004 0030 TCC0.CTRLA=TC_CLKSEL_DIV1_gc;
+;PCODE: $00000027 VOL: 0
+;PCODE: $00000028 VOL: 1
+; 0004 0031 // Mode: Normal Operation, Overflow Int./Event on TOP
+; 0004 0032 // Compare/Capture on channel A: Off
+; 0004 0033 // Compare/Capture on channel B: Off
+; 0004 0034 // Compare/Capture on channel C: Off
+; 0004 0035 // Compare/Capture on channel D: Off
+; 0004 0036 TCC0.CTRLB=(0<<TC0_CCDEN_bp) | (0<<TC0_CCCEN_bp) | (0<<TC0_CCBEN_bp) | (0<<TC0_CCAEN_bp) |
+; 0004 0037 	TC_WGMODE_NORMAL_gc;
 ;PCODE: $00000029 VOL: 0
-; 0003 0048 CCP=CCP_IOREG_gc;
-;PCODE: $0000002A VOL: 0
+;PCODE: $0000002A VOL: 1
+; 0004 0038 // Capture event source: None
+; 0004 0039 // Capture event action: None
+; 0004 003A TCC0.CTRLD=TC_EVACT_OFF_gc | TC_EVSEL_OFF_gc;
 ;PCODE: $0000002B VOL: 0
-; 0003 0049 MCU.AWEXLOCK=n;
 ;PCODE: $0000002C VOL: 1
+; 0004 003B 
+; 0004 003C // Set Timer/Counter in Normal mode
+; 0004 003D TCC0.CTRLE=TC_BYTEM_NORMAL_gc;
 ;PCODE: $0000002D VOL: 0
-; 0003 004A // Restore optimization for size if needed
-; 0003 004B #pragma optsize_default
-; 0003 004C 
-; 0003 004D // Pattern generation: Off
-; 0003 004E // Dead time insertion: Off
-; 0003 004F AWEXC.CTRL=(0<<AWEX_PGM_bp) | (0<<AWEX_CWCM_bp) | (0<<AWEX_DTICCDEN_bp) | (0<<AWEX_DTICCCEN_bp) |
-; 0003 0050 	(0<<AWEX_DTICCBEN_bp) | (0<<AWEX_DTICCAEN_bp);
-;PCODE: $0000002E VOL: 0
-;PCODE: $0000002F VOL: 1
-; 0003 0051 
-; 0003 0052 // Fault protection initialization
-; 0003 0053 // Fault detection on OCD Break detection: On
-; 0003 0054 // Fault detection restart mode: Latched Mode
-; 0003 0055 // Fault detection action: None (Fault protection disabled)
-; 0003 0056 AWEXC.FDCTRL=(AWEXC.FDCTRL & (~(AWEX_FDDBD_bm | AWEX_FDMODE_bm | AWEX_FDACT_gm))) |
-; 0003 0057 	(0<<AWEX_FDDBD_bp) | (0<<AWEX_FDMODE_bp) | AWEX_FDACT_NONE_gc;
+;PCODE: $0000002E VOL: 1
+; 0004 003E 
+; 0004 003F // Overflow interrupt: High Level
+; 0004 0040 // Error interrupt: Disabled
+; 0004 0041 TCC0.INTCTRLA=TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_HI_gc;
+;PCODE: $0000002F VOL: 0
 ;PCODE: $00000030 VOL: 1
+; 0004 0042 
+; 0004 0043 // Compare/Capture channel A interrupt: Disabled
+; 0004 0044 // Compare/Capture channel B interrupt: Disabled
+; 0004 0045 // Compare/Capture channel C interrupt: Disabled
+; 0004 0046 // Compare/Capture channel D interrupt: Disabled
+; 0004 0047 TCC0.INTCTRLB=TC_CCDINTLVL_OFF_gc | TC_CCCINTLVL_OFF_gc | TC_CCBINTLVL_OFF_gc | TC_CCAINTLVL_OFF_gc;
 ;PCODE: $00000031 VOL: 0
-;PCODE: $00000032 VOL: 0
-;PCODE: $00000033 VOL: 0
+;PCODE: $00000032 VOL: 1
+; 0004 0048 
+; 0004 0049 // High resolution extension: Off
+; 0004 004A HIRESC.CTRLA&= ~HIRES_HREN0_bm;
+;PCODE: $00000033 VOL: 1
 ;PCODE: $00000034 VOL: 0
 ;PCODE: $00000035 VOL: 1
-; 0003 0058 // Fault detect events:
-; 0003 0059 // Event channel 0: Off
-; 0003 005A // Event channel 1: Off
-; 0003 005B // Event channel 2: Off
-; 0003 005C // Event channel 3: Off
-; 0003 005D // Event channel 4: Off
-; 0003 005E // Event channel 5: Off
-; 0003 005F // Event channel 6: Off
-; 0003 0060 // Event channel 7: Off
-; 0003 0061 AWEXC.FDEMASK=0b00000000;
-;PCODE: $00000036 VOL: 0
-;PCODE: $00000037 VOL: 1
-; 0003 0062 // Make sure the fault detect flag is cleared
-; 0003 0063 AWEXC.STATUS|=AWEXC.STATUS & AWEX_FDF_bm;
-;PCODE: $00000038 VOL: 1
+; 0004 004B 
+; 0004 004C // Advanced Waveform Extension initialization
+; 0004 004D // Optimize for speed
+; 0004 004E #pragma optsize-
+; 0004 004F // Disable locking the AWEX configuration registers just to be sure
+; 0004 0050 n=MCU.AWEXLOCK & (~MCU_AWEXCLOCK_bm);
+;PCODE: $00000036 VOL: 1
+;PCODE: $00000037 VOL: 0
+;PCODE: $00000038 VOL: 0
+; 0004 0051 CCP=CCP_IOREG_gc;
 ;PCODE: $00000039 VOL: 0
 ;PCODE: $0000003A VOL: 0
+; 0004 0052 MCU.AWEXLOCK=n;
 ;PCODE: $0000003B VOL: 1
 ;PCODE: $0000003C VOL: 0
+; 0004 0053 // Restore optimization for size if needed
+; 0004 0054 #pragma optsize_default
+; 0004 0055 
+; 0004 0056 // Pattern generation: Off
+; 0004 0057 // Dead time insertion: Off
+; 0004 0058 AWEXC.CTRL=(0<<AWEX_PGM_bp) | (0<<AWEX_CWCM_bp) | (0<<AWEX_DTICCDEN_bp) | (0<<AWEX_DTICCCEN_bp) |
+; 0004 0059 	(0<<AWEX_DTICCBEN_bp) | (0<<AWEX_DTICCAEN_bp);
 ;PCODE: $0000003D VOL: 0
-;PCODE: $0000003E VOL: 0
-;PCODE: $0000003F VOL: 0
-; 0003 0064 
-; 0003 0065 // Clear the interrupt flags
-; 0003 0066 TCC0.INTFLAGS=TCC0.INTFLAGS;
-;PCODE: $00000040 VOL: 1
-;PCODE: $00000041 VOL: 1
-; 0003 0067 // Set Counter register
-; 0003 0068 TCC0.CNT=0x0000;
+;PCODE: $0000003E VOL: 1
+; 0004 005A 
+; 0004 005B // Fault protection initialization
+; 0004 005C // Fault detection on OCD Break detection: On
+; 0004 005D // Fault detection restart mode: Latched Mode
+; 0004 005E // Fault detection action: None (Fault protection disabled)
+; 0004 005F AWEXC.FDCTRL=(AWEXC.FDCTRL & (~(AWEX_FDDBD_bm | AWEX_FDMODE_bm | AWEX_FDACT_gm))) |
+; 0004 0060 	(0<<AWEX_FDDBD_bp) | (0<<AWEX_FDMODE_bp) | AWEX_FDACT_NONE_gc;
+;PCODE: $0000003F VOL: 1
+;PCODE: $00000040 VOL: 0
+;PCODE: $00000041 VOL: 0
 ;PCODE: $00000042 VOL: 0
-;PCODE: $00000043 VOL: 1
-; 0003 0069 // Set Period register
-; 0003 006A TCC0.PER=0x07CF;
-;PCODE: $00000044 VOL: 0
-;PCODE: $00000045 VOL: 1
-; 0003 006B // Set channel A Compare/Capture register
-; 0003 006C TCC0.CCA=0x0000;
-;PCODE: $00000046 VOL: 0
+;PCODE: $00000043 VOL: 0
+;PCODE: $00000044 VOL: 1
+; 0004 0061 // Fault detect events:
+; 0004 0062 // Event channel 0: Off
+; 0004 0063 // Event channel 1: Off
+; 0004 0064 // Event channel 2: Off
+; 0004 0065 // Event channel 3: Off
+; 0004 0066 // Event channel 4: Off
+; 0004 0067 // Event channel 5: Off
+; 0004 0068 // Event channel 6: Off
+; 0004 0069 // Event channel 7: Off
+; 0004 006A AWEXC.FDEMASK=0b00000000;
+;PCODE: $00000045 VOL: 0
+;PCODE: $00000046 VOL: 1
+; 0004 006B // Make sure the fault detect flag is cleared
+; 0004 006C AWEXC.STATUS|=AWEXC.STATUS & AWEX_FDF_bm;
 ;PCODE: $00000047 VOL: 1
-; 0003 006D // Set channel B Compare/Capture register
-; 0003 006E TCC0.CCB=0x0000;
 ;PCODE: $00000048 VOL: 0
-;PCODE: $00000049 VOL: 1
-; 0003 006F // Set channel C Compare/Capture register
-; 0003 0070 TCC0.CCC=0x0000;
-;PCODE: $0000004A VOL: 0
-;PCODE: $0000004B VOL: 1
-; 0003 0071 // Set channel D Compare/Capture register
-; 0003 0072 TCC0.CCD=0x0000;
+;PCODE: $00000049 VOL: 0
+;PCODE: $0000004A VOL: 1
+;PCODE: $0000004B VOL: 0
 ;PCODE: $0000004C VOL: 0
-;PCODE: $0000004D VOL: 1
-; 0003 0073 
-; 0003 0074 // Restore interrupts enabled/disabled state
-; 0003 0075 SREG=s;
+;PCODE: $0000004D VOL: 0
 ;PCODE: $0000004E VOL: 0
-;PCODE: $0000004F VOL: 0
-; 0003 0076 }
-;PCODE: $00000050 VOL: 0
+; 0004 006D 
+; 0004 006E // Clear the interrupt flags
+; 0004 006F TCC0.INTFLAGS=TCC0.INTFLAGS;
+;PCODE: $0000004F VOL: 1
+;PCODE: $00000050 VOL: 1
+; 0004 0070 // Set Counter register
+; 0004 0071 TCC0.CNT=0x0000;
 ;PCODE: $00000051 VOL: 0
-;PCODE: $00000052 VOL: 0
+;PCODE: $00000052 VOL: 1
+; 0004 0072 // Set Period register
+; 0004 0073 TCC0.PER=0x07CF;
+;PCODE: $00000053 VOL: 0
+;PCODE: $00000054 VOL: 1
+; 0004 0074 // Set channel A Compare/Capture register
+; 0004 0075 TCC0.CCA=0x0000;
+;PCODE: $00000055 VOL: 0
+;PCODE: $00000056 VOL: 1
+; 0004 0076 // Set channel B Compare/Capture register
+; 0004 0077 TCC0.CCB=0x0000;
+;PCODE: $00000057 VOL: 0
+;PCODE: $00000058 VOL: 1
+; 0004 0078 // Set channel C Compare/Capture register
+; 0004 0079 TCC0.CCC=0x0000;
+;PCODE: $00000059 VOL: 0
+;PCODE: $0000005A VOL: 1
+; 0004 007A // Set channel D Compare/Capture register
+; 0004 007B TCC0.CCD=0x0000;
+;PCODE: $0000005B VOL: 0
+;PCODE: $0000005C VOL: 1
+; 0004 007C 
+; 0004 007D // Restore interrupts enabled/disabled state
+; 0004 007E SREG=s;
+;PCODE: $0000005D VOL: 0
+;PCODE: $0000005E VOL: 0
+; 0004 007F }
+;PCODE: $0000005F VOL: 0
+;PCODE: $00000060 VOL: 0
+;PCODE: $00000061 VOL: 0
 ;
 ;static uint32_t msCounter=0;
 ;
 ;// Timer/Counter TCC0 Overflow/Underflow interrupt service routine
 ;interrupt [TCC0_OVF_vect] void tcc0_overflow_isr(void)
-; 0003 007C {
-;PCODE: $00000053 VOL: 0
-;PCODE: $00000054 VOL: 0
-; 0003 007D // Write your code here
-; 0003 007E 	msCounter++;
-;PCODE: $00000055 VOL: 0
-;PCODE: $00000056 VOL: 0
-;PCODE: $00000057 VOL: 0
-;PCODE: $00000058 VOL: 0
-; 0003 007F }
-;PCODE: $00000059 VOL: 0
-;PCODE: $0000005A VOL: 0
-;PCODE: $0000005B VOL: 0
-;
-;uint32_t getTime(void){
-; 0003 0081 uint32_t getTime(void){
-;PCODE: $0000005C VOL: 0
-;PCODE: $0000005D VOL: 0
-; 0003 0082 
-; 0003 0083 	unsigned char s;
-; 0003 0084 	uint32_t tempValHolder;
-; 0003 0085 	// Save interrupts enabled/disabled state
-; 0003 0086 	s=SREG;
-;PCODE: $0000005E VOL: 0
-;PCODE: $0000005F VOL: 0
-;	s -> R17
-;	tempValHolder -> Y+1
-;PCODE: $00000060 VOL: 0
-;PCODE: $00000061 VOL: 0
-; 0003 0087 	// Disable interrupts
-; 0003 0088 	#asm("cli")
+; 0004 0085 {
 ;PCODE: $00000062 VOL: 0
-; 0003 0089 
-; 0003 008A 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
-; 0003 008B 	tempValHolder=msCounter;
 ;PCODE: $00000063 VOL: 0
+; 0004 0086 // Write your code here
+; 0004 0087 	msCounter++;
 ;PCODE: $00000064 VOL: 0
-; 0003 008C 
-; 0003 008D 	//restore interrupts enabled/disabled state
-; 0003 008E 	SREG=s;
 ;PCODE: $00000065 VOL: 0
 ;PCODE: $00000066 VOL: 0
-; 0003 008F 
-; 0003 0090 }
 ;PCODE: $00000067 VOL: 0
+; 0004 0088 }
 ;PCODE: $00000068 VOL: 0
 ;PCODE: $00000069 VOL: 0
 ;PCODE: $0000006A VOL: 0
+;
+;// Timer/Counter TCC1 initialization
+;void tcc1_init(void)
+; 0004 008C {
 ;PCODE: $0000006B VOL: 0
+;PCODE: $0000006C VOL: 0
+; 0004 008D unsigned char s;
+; 0004 008E 
+; 0004 008F // Note: The correct PORTC direction for the Compare Channels
+; 0004 0090 // outputs is configured in the ports_init function.
+; 0004 0091 
+; 0004 0092 // Save interrupts enabled/disabled state
+; 0004 0093 s=SREG;
+;PCODE: $0000006D VOL: 0
+;	s -> R17
+;PCODE: $0000006E VOL: 0
+;PCODE: $0000006F VOL: 0
+; 0004 0094 // Disable interrupts
+; 0004 0095 #asm("cli")
+;PCODE: $00000070 VOL: 0
+; 0004 0096 
+; 0004 0097 // Disable and reset the timer/counter just to be sure
+; 0004 0098 tc1_disable(&TCC1);
+;PCODE: $00000071 VOL: 1
+;PCODE: $00000072 VOL: 0
+; 0004 0099 // Clock source: ClkPer/256
+; 0004 009A TCC1.CTRLA=TC_CLKSEL_DIV256_gc;
+;PCODE: $00000073 VOL: 0
+;PCODE: $00000074 VOL: 1
+; 0004 009B // Mode: Normal Operation, Overflow Int./Event on TOP
+; 0004 009C // Compare/Capture on channel A: On
+; 0004 009D // Compare/Capture on channel B: Off
+; 0004 009E TCC1.CTRLB=(0<<TC1_CCBEN_bp) | (1<<TC1_CCAEN_bp) |
+; 0004 009F 	TC_WGMODE_NORMAL_gc;
+;PCODE: $00000075 VOL: 0
+;PCODE: $00000076 VOL: 1
+; 0004 00A0 // Capture event source: Event Channel 0
+; 0004 00A1 // Capture event action: Input Capture
+; 0004 00A2 TCC1.CTRLD=TC_EVACT_CAPT_gc | TC_EVSEL_CH0_gc;
+;PCODE: $00000077 VOL: 0
+;PCODE: $00000078 VOL: 1
+; 0004 00A3 
+; 0004 00A4 // Set Timer/Counter in Normal mode
+; 0004 00A5 TCC1.CTRLE=TC_BYTEM_NORMAL_gc;
+;PCODE: $00000079 VOL: 0
+;PCODE: $0000007A VOL: 1
+; 0004 00A6 
+; 0004 00A7 // Overflow interrupt: Disabled
+; 0004 00A8 // Error interrupt: Disabled
+; 0004 00A9 TCC1.INTCTRLA=TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_OFF_gc;
+;PCODE: $0000007B VOL: 0
+;PCODE: $0000007C VOL: 1
+; 0004 00AA 
+; 0004 00AB // Compare/Capture channel A interrupt: High Level
+; 0004 00AC // Compare/Capture channel B interrupt: Disabled
+; 0004 00AD TCC1.INTCTRLB=TC_CCBINTLVL_OFF_gc | TC_CCAINTLVL_HI_gc;
+;PCODE: $0000007D VOL: 0
+;PCODE: $0000007E VOL: 1
+; 0004 00AE 
+; 0004 00AF // High resolution extension: Off
+; 0004 00B0 HIRESC.CTRLA&= ~HIRES_HREN1_bm;
+;PCODE: $0000007F VOL: 1
+;PCODE: $00000080 VOL: 0
+;PCODE: $00000081 VOL: 1
+; 0004 00B1 
+; 0004 00B2 // Clear the interrupt flags
+; 0004 00B3 TCC1.INTFLAGS=TCC1.INTFLAGS;
+;PCODE: $00000082 VOL: 1
+;PCODE: $00000083 VOL: 1
+; 0004 00B4 // Set Counter register
+; 0004 00B5 TCC1.CNT=0x0000;
+;PCODE: $00000084 VOL: 0
+;PCODE: $00000085 VOL: 1
+; 0004 00B6 // Set Period register
+; 0004 00B7 TCC1.PER=0x0000;
+;PCODE: $00000086 VOL: 0
+;PCODE: $00000087 VOL: 1
+; 0004 00B8 // Set channel A Compare/Capture register
+; 0004 00B9 TCC1.CCA=0x0000;
+;PCODE: $00000088 VOL: 0
+;PCODE: $00000089 VOL: 1
+; 0004 00BA // Set channel B Compare/Capture register
+; 0004 00BB TCC1.CCB=0x0000;
+;PCODE: $0000008A VOL: 0
+;PCODE: $0000008B VOL: 1
+; 0004 00BC 
+; 0004 00BD // Restore interrupts enabled/disabled state
+; 0004 00BE SREG=s;
+;PCODE: $0000008C VOL: 0
+;PCODE: $0000008D VOL: 0
+; 0004 00BF }
+;PCODE: $0000008E VOL: 0
+;PCODE: $0000008F VOL: 0
+;PCODE: $00000090 VOL: 0
+;
+;// Timer/Counter TCC1 Compare/Capture A interrupt service routine
+;interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
+; 0004 00C3 {
+;PCODE: $00000091 VOL: 0
+;PCODE: $00000092 VOL: 0
+; 0004 00C4 // Ensure that the Compare/Capture A interrupt flag is cleared
+; 0004 00C5 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
+;PCODE: $00000093 VOL: 1
+;PCODE: $00000094 VOL: 0
+;PCODE: $00000095 VOL: 0
+;PCODE: $00000096 VOL: 1
+;PCODE: $00000097 VOL: 0
+;PCODE: $00000098 VOL: 1
+; 0004 00C6 // Write your code here
+; 0004 00C7 
+; 0004 00C8 }
+;PCODE: $00000099 VOL: 0
+;PCODE: $0000009A VOL: 0
+;PCODE: $0000009B VOL: 0
+;PCODE: $0000009C VOL: 0
+;uint32_t getTime(void){
+; 0004 00C9 uint32_t getTime(void){
+;PCODE: $0000009D VOL: 0
+;PCODE: $0000009E VOL: 0
+; 0004 00CA 
+; 0004 00CB 	unsigned char s;
+; 0004 00CC 	uint32_t tempValHolder;
+; 0004 00CD 	// Save interrupts enabled/disabled state
+; 0004 00CE 	s=SREG;
+;PCODE: $0000009F VOL: 0
+;PCODE: $000000A0 VOL: 0
+;	s -> R17
+;	tempValHolder -> Y+1
+;PCODE: $000000A1 VOL: 0
+;PCODE: $000000A2 VOL: 0
+; 0004 00CF 	// Disable interrupts
+; 0004 00D0 	#asm("cli")
+;PCODE: $000000A3 VOL: 0
+; 0004 00D1 
+; 0004 00D2 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
+; 0004 00D3 	tempValHolder=msCounter;
+;PCODE: $000000A4 VOL: 0
+;PCODE: $000000A5 VOL: 0
+; 0004 00D4 
+; 0004 00D5 	//restore interrupts enabled/disabled state
+; 0004 00D6 	SREG=s;
+;PCODE: $000000A6 VOL: 0
+;PCODE: $000000A7 VOL: 0
+; 0004 00D7 
+; 0004 00D8 }
+;PCODE: $000000A8 VOL: 0
+;PCODE: $000000A9 VOL: 0
+;PCODE: $000000AA VOL: 0
+;PCODE: $000000AB VOL: 0
+;PCODE: $000000AC VOL: 0

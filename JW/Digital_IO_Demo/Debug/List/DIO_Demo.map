@@ -14,11 +14,15 @@ Variable                                                                        
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-main                                                                              0x000CB     28
-system_clocks_init                                                                0x000E7     44
-ports_init                                                                        0x00113    228
-vports_init                                                                       0x001F7      7
-tc0_disable                                                                       0x001FE      9
-tcc0_init                                                                         0x00207     95
-tcc0_overflow_isr                                                                 0x00266     25
-getTime                                                                           0x0027F     20
+main                                                                              0x000CB     35
+system_clocks_init                                                                0x000EE     44
+event_system_init                                                                 0x0011A     38
+ports_init                                                                        0x00140    231
+vports_init                                                                       0x00227      7
+tc0_disable                                                                       0x0022E      2
+tc1_disable                                                                       0x00230      2
+tcc0_init                                                                         0x00232     95
+tcc0_overflow_isr                                                                 0x00291     25
+tcc1_init                                                                         0x002AA     53
+tcc1_compare_capture_a_isr                                                        0x002DF     16
+getTime                                                                           0x002EF     20

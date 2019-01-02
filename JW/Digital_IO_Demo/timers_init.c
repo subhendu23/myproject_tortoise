@@ -19,6 +19,15 @@ ptc->CTRLA=TC_CLKSEL_OFF_gc;
 ptc->CTRLFSET=TC_CMD_RESET_gc;
 }
 
+// Disable a Timer/Counter type TC1
+void tc1_disable(TC1_t *ptc)
+{
+// Timer/Counter off
+ptc->CTRLA=TC_CLKSEL_OFF_gc;
+// Issue a reset command
+ptc->CTRLFSET=TC_CMD_RESET_gc;
+}
+
 // Timer/Counter TCC0 initialization
 void tcc0_init(void)
 {
@@ -126,6 +135,69 @@ interrupt [TCC0_OVF_vect] void tcc0_overflow_isr(void)
 	msCounter++;
 }
 
+// Timer/Counter TCC1 initialization
+void tcc1_init(void)
+{
+unsigned char s;
+
+// Note: The correct PORTC direction for the Compare Channels
+// outputs is configured in the ports_init function.
+
+// Save interrupts enabled/disabled state
+s=SREG;
+// Disable interrupts
+#asm("cli")
+
+// Disable and reset the timer/counter just to be sure
+tc1_disable(&TCC1);
+// Clock source: ClkPer/256
+TCC1.CTRLA=TC_CLKSEL_DIV256_gc;
+// Mode: Normal Operation, Overflow Int./Event on TOP
+// Compare/Capture on channel A: On
+// Compare/Capture on channel B: Off
+TCC1.CTRLB=(0<<TC1_CCBEN_bp) | (1<<TC1_CCAEN_bp) |
+	TC_WGMODE_NORMAL_gc;
+// Capture event source: Event Channel 0
+// Capture event action: Input Capture
+TCC1.CTRLD=TC_EVACT_CAPT_gc | TC_EVSEL_CH0_gc;
+
+// Set Timer/Counter in Normal mode
+TCC1.CTRLE=TC_BYTEM_NORMAL_gc;
+
+// Overflow interrupt: Disabled
+// Error interrupt: Disabled
+TCC1.INTCTRLA=TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_OFF_gc;
+
+// Compare/Capture channel A interrupt: High Level
+// Compare/Capture channel B interrupt: Disabled
+TCC1.INTCTRLB=TC_CCBINTLVL_OFF_gc | TC_CCAINTLVL_HI_gc;
+
+// High resolution extension: Off
+HIRESC.CTRLA&= ~HIRES_HREN1_bm;
+
+// Clear the interrupt flags
+TCC1.INTFLAGS=TCC1.INTFLAGS;
+// Set Counter register
+TCC1.CNT=0x0000;
+// Set Period register
+TCC1.PER=0x0000;
+// Set channel A Compare/Capture register
+TCC1.CCA=0x0000;
+// Set channel B Compare/Capture register
+TCC1.CCB=0x0000;
+
+// Restore interrupts enabled/disabled state
+SREG=s;
+}
+
+// Timer/Counter TCC1 Compare/Capture A interrupt service routine
+interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
+{
+// Ensure that the Compare/Capture A interrupt flag is cleared
+if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
+// Write your code here
+
+}
 uint32_t getTime(void){
 	
 	unsigned char s;
