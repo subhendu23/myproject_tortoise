@@ -23,6 +23,6 @@ tc0_disable                                                                     
 tc1_disable                                                                       0x00230      2
 tcc0_init                                                                         0x00232     95
 tcc0_overflow_isr                                                                 0x00291     25
-tcc1_init                                                                         0x002AA     53
-tcc1_compare_capture_a_isr                                                        0x002DF     16
-getTime                                                                           0x002EF     20
+tcc1_init                                                                         0x002AA     57
+tcc1_compare_capture_a_isr                                                        0x002E3     17
+getTime                                                                           0x002F4     20

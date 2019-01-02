@@ -180,7 +180,7 @@ TCC1.INTFLAGS=TCC1.INTFLAGS;
 // Set Counter register
 TCC1.CNT=0x0000;
 // Set Period register
-TCC1.PER=0x0000;
+TCC1.PER=0xFFFF;
 // Set channel A Compare/Capture register
 TCC1.CCA=0x0000;
 // Set channel B Compare/Capture register
@@ -196,7 +196,7 @@ interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
 // Ensure that the Compare/Capture A interrupt flag is cleared
 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
 // Write your code here
-
+#asm("nop")
 }
 uint32_t getTime(void){
 	

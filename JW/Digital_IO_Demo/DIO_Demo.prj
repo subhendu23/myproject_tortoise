@@ -129,8 +129,8 @@ UseEEPROMLocation0=1
 DisplayCodeSizeError=1
 RebuildAll=0
 LinkageInformationPresent=1
-COFFileTimeStamp=1310885707
-Build=2
+COFFileTimeStamp=1310889050
+Build=5
 GlobalVarAddr=10244
 EEPROMVarAddr=0
 [DefinedSymbolsDebug]
@@ -240,7 +240,7 @@ DisplayCodeSizeError=1
 RebuildAll=1
 LinkageInformationPresent=0
 COFFileTimeStamp=-1
-Build=2
+Build=5
 [DefinedSymbols]
 Count=0
 [CompilerAdvanced]
@@ -368,8 +368,8 @@ L13=Enhanced function parameters passing: Mode 2
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 2
-L18=50962 line(s) compiled
+L17=Build: 5
+L18=7128 line(s) compiled
 L19=No errors
 L20=2 warning(s)
 L21=
@@ -388,23 +388,36 @@ L33=
 L34=Heap size: 0 byte(s)
 L35=
 L36=EEPROM usage: 0 byte(s), 0.0% of EEPROM
-L37=Program size: 790 words (1580 bytes), 1.2% of FLASH
+L37=Program size: 795 words (1590 bytes), 1.2% of FLASH
 Lines=38
 L38=7 words (14 bytes), 0.9% reduced by Code Compression
 [BuildInfoAssembler]
 L1=AVRASM: AVR macro assembler 2.1.30 (build 592 Nov  7 2008 12:38:17)
 L2=Copyright (C) 1995-2008 ATMEL Corporation
 L3=
-L4=C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm(2680): No EEPROM data, deleting C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\Exe\DIO_Demo.eep
+L4=C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm(2685): No EEPROM data, deleting C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\Exe\DIO_Demo.eep
 L5=
 L6=ATxmega128B1 memory use summary [bytes]:
 L7=Segment   Begin    End      Code   Data   Used    Size   Use%
 L8=---------------------------------------------------------------
-L9=[.cseg] 0x000000 0x00062c   1562     18   1580  139264   1.1%
+L9=[.cseg] 0x000000 0x000636   1572     18   1590  139264   1.1%
 L10=[.dseg] 0x002000 0x002804      0      4      4    8192   0.0%
 L11=[.eseg] 0x000000 0x000000      0      0      0    2048   0.0%
 L12=
 Lines=12
+[Header2]
+Files=5
+F1=C:\cvavreval\inc\xmega128b1.h
+F2=C:\cvavreval\inc\xmstruct.h
+F3=C:\cvavreval\inc\xmbits_b1.h
+F4=C:\cvavreval\inc\iobits.h
+F5=C:\cvavreval\inc\stddef.h
+[Header5]
+Files=4
+F1=C:\cvavreval\inc\xmega128b1.h
+F2=C:\cvavreval\inc\xmstruct.h
+F3=C:\cvavreval\inc\xmbits_b1.h
+F4=C:\cvavreval\inc\iobits.h
 [Header1]
 Files=12
 F1=C:\cvavreval\inc\xmega128b1.h
@@ -419,19 +432,6 @@ F9=clock_init.h
 F10=event_system_init.h
 F11=ports_init.h
 F12=timers_init.h
-[Header2]
-Files=5
-F1=C:\cvavreval\inc\xmega128b1.h
-F2=C:\cvavreval\inc\xmstruct.h
-F3=C:\cvavreval\inc\xmbits_b1.h
-F4=C:\cvavreval\inc\iobits.h
-F5=C:\cvavreval\inc\stddef.h
-[Header5]
-Files=4
-F1=C:\cvavreval\inc\xmega128b1.h
-F2=C:\cvavreval\inc\xmstruct.h
-F3=C:\cvavreval\inc\xmbits_b1.h
-F4=C:\cvavreval\inc\iobits.h
 [Header3]
 Files=4
 F1=C:\cvavreval\inc\xmega128b1.h

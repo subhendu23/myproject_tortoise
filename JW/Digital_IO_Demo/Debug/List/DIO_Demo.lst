@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Wed Jan 02 16:58:20 2019
+AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Wed Jan 02 18:34:50 2019
 
                  
                  
@@ -1149,7 +1149,7 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
 000026 940c 0000 	JMP  0x00
 000028 940c 0000 	JMP  0x00
 00002a 940c 0000 	JMP  0x00
-00002c 940c 02df 	JMP  _tcc1_compare_capture_a_isr
+00002c 940c 02e3 	JMP  _tcc1_compare_capture_a_isr
 00002e 940c 0000 	JMP  0x00
 000030 940c 0000 	JMP  0x00
 000032 940c 0000 	JMP  0x00
@@ -1394,7 +1394,7 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
 0000df 91e0 0688 	LDS  R30,1672
 0000e1 70e1      	ANDI R30,LOW(0x1)
 0000e2 f019      	BREQ _0x7
-0000e3 d20b      	RCALL _getTime
+0000e3 d210      	RCALL _getTime
 0000e4 70f1      	ANDI R31,HIGH(0x100)
 0000e5 f409      	BRNE _0x8
                  _0x7:
@@ -2263,7 +2263,7 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; .FSTART _tc0_disable
                  ; 0004 0010 // Timer/Counter off
                  ; 0004 0011 ptc->CTRLA=TC_CLKSEL_OFF_gc;
-00022e d0d4      	RCALL SUBOPT_0x0
+00022e d0d9      	RCALL SUBOPT_0x0
                  ;	*ptc -> R16,R17
                  ; 0004 0012 // Issue a reset command
                  ; 0004 0013 ptc->CTRLFSET=TC_CMD_RESET_gc;
@@ -2278,7 +2278,7 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; .FSTART _tc1_disable
                  ; 0004 0019 // Timer/Counter off
                  ; 0004 001A ptc->CTRLA=TC_CLKSEL_OFF_gc;
-000230 d0d2      	RCALL SUBOPT_0x0
+000230 d0d7      	RCALL SUBOPT_0x0
                  ;	*ptc -> R16,R17
                  ; 0004 001B // Issue a reset command
                  ; 0004 001C ptc->CTRLFSET=TC_CMD_RESET_gc;
@@ -2475,14 +2475,14 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 0087 	msCounter++;
 000299 e0a0      	LDI  R26,LOW(_msCounter_G004)
 00029a e2b8      	LDI  R27,HIGH(_msCounter_G004)
-00029b d070      	RCALL __GETD1P_INC
+00029b d075      	RCALL __GETD1P_INC
                 +
 00029c 5fef     +SUBI R30 , LOW ( - 1 )
 00029d 4fff     +SBCI R31 , HIGH ( - 1 )
 00029e 4f6f     +SBCI R22 , BYTE3 ( - 1 )
 00029f 4f7f     +SBCI R23 , BYTE4 ( - 1 )
                  	__SUBD1N -1
-0002a0 d070      	RCALL __PUTDP1_DEC
+0002a0 d075      	RCALL __PUTDP1_DEC
                  ; 0004 0088 }
 0002a1 91e9      	LD   R30,Y+
 0002a2 bfef      	OUT  SREG,R30
@@ -2569,24 +2569,28 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
 0002cc 93e0 0860 	STS  2144,R30
 0002ce 93f0 0861 	STS  2144+1,R31
                  ; 0004 00B6 // Set Period register
-                 ; 0004 00B7 TCC1.PER=0x0000;
-0002d0 93e0 0866 	STS  2150,R30
-0002d2 93f0 0867 	STS  2150+1,R31
+                 ; 0004 00B7 TCC1.PER=0xFFFF;
+0002d0 efef      	LDI  R30,LOW(65535)
+0002d1 efff      	LDI  R31,HIGH(65535)
+0002d2 93e0 0866 	STS  2150,R30
+0002d4 93f0 0867 	STS  2150+1,R31
                  ; 0004 00B8 // Set channel A Compare/Capture register
                  ; 0004 00B9 TCC1.CCA=0x0000;
-0002d4 93e0 0868 	STS  2152,R30
-0002d6 93f0 0869 	STS  2152+1,R31
+0002d6 e0e0      	LDI  R30,LOW(0)
+0002d7 e0f0      	LDI  R31,HIGH(0)
+0002d8 93e0 0868 	STS  2152,R30
+0002da 93f0 0869 	STS  2152+1,R31
                  ; 0004 00BA // Set channel B Compare/Capture register
                  ; 0004 00BB TCC1.CCB=0x0000;
-0002d8 93e0 086a 	STS  2154,R30
-0002da 93f0 086b 	STS  2154+1,R31
+0002dc 93e0 086a 	STS  2154,R30
+0002de 93f0 086b 	STS  2154+1,R31
                  ; 0004 00BC 
                  ; 0004 00BD // Restore interrupts enabled/disabled state
                  ; 0004 00BE SREG=s;
-0002dc bf1f      	OUT  0x3F,R17
+0002e0 bf1f      	OUT  0x3F,R17
                  ; 0004 00BF }
-0002dd 9119      	LD   R17,Y+
-0002de 9508      	RET
+0002e1 9119      	LD   R17,Y+
+0002e2 9508      	RET
                  ; .FEND
                  ;
                  ;// Timer/Counter TCC1 Compare/Capture A interrupt service routine
@@ -2594,25 +2598,26 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 00C3 {
                  _tcc1_compare_capture_a_isr:
                  ; .FSTART _tcc1_compare_capture_a_isr
-0002df 93ea      	ST   -Y,R30
-0002e0 b7ef      	IN   R30,SREG
-0002e1 93ea      	ST   -Y,R30
+0002e3 93ea      	ST   -Y,R30
+0002e4 b7ef      	IN   R30,SREG
+0002e5 93ea      	ST   -Y,R30
                  ; 0004 00C4 // Ensure that the Compare/Capture A interrupt flag is cleared
                  ; 0004 00C5 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
-0002e2 91e0 084c 	LDS  R30,2124
-0002e4 71e0      	ANDI R30,LOW(0x10)
-0002e5 f029      	BREQ _0x80003
 0002e6 91e0 084c 	LDS  R30,2124
-0002e8 61e0      	ORI  R30,0x10
-0002e9 93e0 084c 	STS  2124,R30
+0002e8 71e0      	ANDI R30,LOW(0x10)
+0002e9 f029      	BREQ _0x80003
+0002ea 91e0 084c 	LDS  R30,2124
+0002ec 61e0      	ORI  R30,0x10
+0002ed 93e0 084c 	STS  2124,R30
                  ; 0004 00C6 // Write your code here
-                 ; 0004 00C7 
-                 ; 0004 00C8 }
+                 ; 0004 00C7 #asm("nop")
                  _0x80003:
-0002eb 91e9      	LD   R30,Y+
-0002ec bfef      	OUT  SREG,R30
-0002ed 91e9      	LD   R30,Y+
-0002ee 9518      	RETI
+0002ef 0000      	NOP
+                 ; 0004 00C8 }
+0002f0 91e9      	LD   R30,Y+
+0002f1 bfef      	OUT  SREG,R30
+0002f2 91e9      	LD   R30,Y+
+0002f3 9518      	RETI
                  ; .FEND
                  ;uint32_t getTime(void){
                  ; 0004 00C9 uint32_t getTime(void){
@@ -2623,36 +2628,36 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 00CC 	uint32_t tempValHolder;
                  ; 0004 00CD 	// Save interrupts enabled/disabled state
                  ; 0004 00CE 	s=SREG;
-0002ef 9724      	SBIW R28,4
-0002f0 931a      	ST   -Y,R17
+0002f4 9724      	SBIW R28,4
+0002f5 931a      	ST   -Y,R17
                  ;	s -> R17
                  ;	tempValHolder -> Y+1
-0002f1 b71f      	IN   R17,63
+0002f6 b71f      	IN   R17,63
                  ; 0004 00CF 	// Disable interrupts
                  ; 0004 00D0 	#asm("cli")
-0002f2 94f8      	CLI
+0002f7 94f8      	CLI
                  ; 0004 00D1 
                  ; 0004 00D2 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
                  ; 0004 00D3 	tempValHolder=msCounter;
-0002f3 91e0 2800 	LDS  R30,_msCounter_G004
-0002f5 91f0 2801 	LDS  R31,_msCounter_G004+1
-0002f7 9160 2802 	LDS  R22,_msCounter_G004+2
-0002f9 9170 2803 	LDS  R23,_msCounter_G004+3
+0002f8 91e0 2800 	LDS  R30,_msCounter_G004
+0002fa 91f0 2801 	LDS  R31,_msCounter_G004+1
+0002fc 9160 2802 	LDS  R22,_msCounter_G004+2
+0002fe 9170 2803 	LDS  R23,_msCounter_G004+3
                 +
-0002fb 83e9     +STD Y + 1 , R30
-0002fc 83fa     +STD Y + 1 + 1 , R31
-0002fd 836b     +STD Y + 1 + 2 , R22
-0002fe 837c     +STD Y + 1 + 3 , R23
+000300 83e9     +STD Y + 1 , R30
+000301 83fa     +STD Y + 1 + 1 , R31
+000302 836b     +STD Y + 1 + 2 , R22
+000303 837c     +STD Y + 1 + 3 , R23
                  	__PUTD1S 1
                  ; 0004 00D4 
                  ; 0004 00D5 	//restore interrupts enabled/disabled state
                  ; 0004 00D6 	SREG=s;
-0002ff bf1f      	OUT  0x3F,R17
+000304 bf1f      	OUT  0x3F,R17
                  ; 0004 00D7 
                  ; 0004 00D8 }
-000300 8118      	LDD  R17,Y+0
-000301 9625      	ADIW R28,5
-000302 9508      	RET
+000305 8118      	LDD  R17,Y+0
+000306 9625      	ADIW R28,5
+000307 9508      	RET
                  ; .FEND
                  
                  	.CSEG
@@ -2668,32 +2673,32 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  	.CSEG
                  ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:7 WORDS
                  SUBOPT_0x0:
-000303 931a      	ST   -Y,R17
-000304 930a      	ST   -Y,R16
-000305 018d      	MOVW R16,R26
-000306 e0e0      	LDI  R30,LOW(0)
-000307 93ec      	ST   X,R30
-000308 9619      	ADIW R26,9
-000309 e0ec      	LDI  R30,LOW(12)
-00030a 93ec      	ST   X,R30
-00030b 9508      	RET
+000308 931a      	ST   -Y,R17
+000309 930a      	ST   -Y,R16
+00030a 018d      	MOVW R16,R26
+00030b e0e0      	LDI  R30,LOW(0)
+00030c 93ec      	ST   X,R30
+00030d 9619      	ADIW R26,9
+00030e e0ec      	LDI  R30,LOW(12)
+00030f 93ec      	ST   X,R30
+000310 9508      	RET
                  
                  ;RUNTIME LIBRARY
                  
                  	.CSEG
                  __GETD1P_INC:
-00030c 91ed      	LD   R30,X+
-00030d 91fd      	LD   R31,X+
-00030e 916d      	LD   R22,X+
-00030f 917d      	LD   R23,X+
-000310 9508      	RET
+000311 91ed      	LD   R30,X+
+000312 91fd      	LD   R31,X+
+000313 916d      	LD   R22,X+
+000314 917d      	LD   R23,X+
+000315 9508      	RET
                  
                  __PUTDP1_DEC:
-000311 937e      	ST   -X,R23
-000312 936e      	ST   -X,R22
-000313 93fe      	ST   -X,R31
-000314 93ee      	ST   -X,R30
-000315 9508      	RET
+000316 937e      	ST   -X,R23
+000317 936e      	ST   -X,R22
+000318 93fe      	ST   -X,R31
+000319 93ee      	ST   -X,R30
+00031a 9508      	RET
                  
                  ;END OF CODE MARKER
                  __END_OF_CODE:
@@ -2717,7 +2722,7 @@ ATxmega128B1 register use summary:
 r0 :   2 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
 r16:   9 r17:  20 r18:   0 r19:   0 r20:   0 r21:   0 r22:   7 r23:   7 
-r24:   3 r25:   1 r26:  13 r27:   7 r28:   3 r29:   1 r30: 289 r31:  27 
+r24:   3 r25:   1 r26:  13 r27:   7 r28:   3 r29:   1 r30: 291 r31:  29 
 x  :  13 y  :  34 z  :   0 
 Registers used: 15 out of 35 (42.9%)
 
@@ -2733,21 +2738,21 @@ clr   :   1 cls   :   0 clt   :   0 clv   :   0 clz   :   0 com   :   0
 cp    :   0 cpc   :   0 cpi   :   0 cpse  :   0 dec   :   0 des   :   0 
 eicall:   0 eijmp :   0 elpm  :   0 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   6 inc   :   0 jmp   :  82 
-ld    :  17 ldd   :   1 ldi   :  69 lds   :  34 lpm   :   0 lsl   :   0 
+ld    :  17 ldd   :   1 ldi   :  73 lds   :  34 lpm   :   0 lsl   :   0 
 lsr   :   0 mov   :   6 movw  :   1 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   1 ori   :   5 out   :  18 pop   :   0 
+neg   :   0 nop   :   1 or    :   1 ori   :   5 out   :  18 pop   :   0 
 push  :   0 rcall :  13 ret   :   9 reti  :   2 rjmp  :   7 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   3 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   2 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
 sez   :   0 sleep :   0 spm   :   0 st    :  25 std   :   4 sts   : 159 
 sub   :   0 subi  :   1 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 28 out of 119 (23.5%)
+Instructions used: 29 out of 119 (24.4%)
 
 ATxmega128B1 memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00062c   1562     18   1580  139264   1.1%
+[.cseg] 0x000000 0x000636   1572     18   1590  139264   1.1%
 [.dseg] 0x002000 0x002804      0      4      4    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    2048   0.0%
 

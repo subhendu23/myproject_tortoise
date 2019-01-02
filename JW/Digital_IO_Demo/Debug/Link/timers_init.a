@@ -321,7 +321,7 @@
 ;PCODE: $00000084 VOL: 0
 ;PCODE: $00000085 VOL: 1
 ; 0004 00B6 // Set Period register
-; 0004 00B7 TCC1.PER=0x0000;
+; 0004 00B7 TCC1.PER=0xFFFF;
 ;PCODE: $00000086 VOL: 0
 ;PCODE: $00000087 VOL: 1
 ; 0004 00B8 // Set channel A Compare/Capture register
@@ -356,44 +356,45 @@
 ;PCODE: $00000097 VOL: 0
 ;PCODE: $00000098 VOL: 1
 ; 0004 00C6 // Write your code here
-; 0004 00C7 
-; 0004 00C8 }
+; 0004 00C7 #asm("nop")
 ;PCODE: $00000099 VOL: 0
 ;PCODE: $0000009A VOL: 0
+; 0004 00C8 }
 ;PCODE: $0000009B VOL: 0
 ;PCODE: $0000009C VOL: 0
+;PCODE: $0000009D VOL: 0
 ;uint32_t getTime(void){
 ; 0004 00C9 uint32_t getTime(void){
-;PCODE: $0000009D VOL: 0
 ;PCODE: $0000009E VOL: 0
+;PCODE: $0000009F VOL: 0
 ; 0004 00CA 
 ; 0004 00CB 	unsigned char s;
 ; 0004 00CC 	uint32_t tempValHolder;
 ; 0004 00CD 	// Save interrupts enabled/disabled state
 ; 0004 00CE 	s=SREG;
-;PCODE: $0000009F VOL: 0
 ;PCODE: $000000A0 VOL: 0
+;PCODE: $000000A1 VOL: 0
 ;	s -> R17
 ;	tempValHolder -> Y+1
-;PCODE: $000000A1 VOL: 0
 ;PCODE: $000000A2 VOL: 0
+;PCODE: $000000A3 VOL: 0
 ; 0004 00CF 	// Disable interrupts
 ; 0004 00D0 	#asm("cli")
-;PCODE: $000000A3 VOL: 0
+;PCODE: $000000A4 VOL: 0
 ; 0004 00D1 
 ; 0004 00D2 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
 ; 0004 00D3 	tempValHolder=msCounter;
-;PCODE: $000000A4 VOL: 0
 ;PCODE: $000000A5 VOL: 0
+;PCODE: $000000A6 VOL: 0
 ; 0004 00D4 
 ; 0004 00D5 	//restore interrupts enabled/disabled state
 ; 0004 00D6 	SREG=s;
-;PCODE: $000000A6 VOL: 0
 ;PCODE: $000000A7 VOL: 0
+;PCODE: $000000A8 VOL: 0
 ; 0004 00D7 
 ; 0004 00D8 }
-;PCODE: $000000A8 VOL: 0
 ;PCODE: $000000A9 VOL: 0
 ;PCODE: $000000AA VOL: 0
 ;PCODE: $000000AB VOL: 0
 ;PCODE: $000000AC VOL: 0
+;PCODE: $000000AD VOL: 0

@@ -2554,11 +2554,15 @@ _tcc1_init:
 	STS  2144,R30
 	STS  2144+1,R31
 ; 0004 00B6 // Set Period register
-; 0004 00B7 TCC1.PER=0x0000;
+; 0004 00B7 TCC1.PER=0xFFFF;
+	LDI  R30,LOW(65535)
+	LDI  R31,HIGH(65535)
 	STS  2150,R30
 	STS  2150+1,R31
 ; 0004 00B8 // Set channel A Compare/Capture register
 ; 0004 00B9 TCC1.CCA=0x0000;
+	LDI  R30,LOW(0)
+	LDI  R31,HIGH(0)
 	STS  2152,R30
 	STS  2152+1,R31
 ; 0004 00BA // Set channel B Compare/Capture register
@@ -2591,9 +2595,10 @@ _tcc1_compare_capture_a_isr:
 	ORI  R30,0x10
 	STS  2124,R30
 ; 0004 00C6 // Write your code here
-; 0004 00C7 
-; 0004 00C8 }
+; 0004 00C7 #asm("nop")
 _0x80003:
+	NOP
+; 0004 00C8 }
 	LD   R30,Y+
 	OUT  SREG,R30
 	LD   R30,Y+
