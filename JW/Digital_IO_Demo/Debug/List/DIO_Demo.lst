@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Sun Dec 30 17:31:42 2018
+AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Wed Jan 02 16:17:32 2019
 
                  
                  
@@ -1379,9 +1379,9 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  _0x3:
                  ; 0000 0050       {
                  ; 0000 0051       // Place your code here
-                 ; 0000 0052 	  if(getTime() & 0x300)
+                 ; 0000 0052 	  if(getTime() & 0x200)
 0000dd d1a1      	RCALL _getTime
-0000de 70f3      	ANDI R31,HIGH(0x300)
+0000de 70f2      	ANDI R31,HIGH(0x200)
 0000df f011      	BREQ _0x6
                  ; 0000 0053 	  {
                  ; 0000 0054 		  PORTB.OUT=0xF0;

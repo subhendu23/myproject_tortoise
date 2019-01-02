@@ -1369,9 +1369,9 @@ _main:
 _0x3:
 ; 0000 0050       {
 ; 0000 0051       // Place your code here
-; 0000 0052 	  if(getTime() & 0x300)
+; 0000 0052 	  if(getTime() & 0x200)
 	RCALL _getTime
-	ANDI R31,HIGH(0x300)
+	ANDI R31,HIGH(0x200)
 	BREQ _0x6
 ; 0000 0053 	  {
 ; 0000 0054 		  PORTB.OUT=0xF0;

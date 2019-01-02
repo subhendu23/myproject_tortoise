@@ -79,7 +79,7 @@ tcc0_init();
 while (1)
       {
       // Place your code here
-	  if(getTime() & 0x300)
+	  if(getTime() & 0x200)
 	  {
 		  PORTB.OUT=0xF0;
 	  }

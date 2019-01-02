@@ -100,7 +100,7 @@
 ;PCODE: $00000011 VOL: 0
 ; 0000 0050       {
 ; 0000 0051       // Place your code here
-; 0000 0052 	  if(getTime() & 0x300)
+; 0000 0052 	  if(getTime() & 0x200)
 ;PCODE: $00000012 VOL: 0
 ;PCODE: $00000013 VOL: 0
 ;PCODE: $00000014 VOL: 0

@@ -128,8 +128,8 @@ UseEEPROMLocation0=1
 DisplayCodeSizeError=1
 RebuildAll=0
 LinkageInformationPresent=1
-COFFileTimeStamp=1302236150
-Build=5
+COFFileTimeStamp=1310884401
+Build=7
 GlobalVarAddr=10244
 EEPROMVarAddr=0
 [DefinedSymbolsDebug]
@@ -239,7 +239,7 @@ DisplayCodeSizeError=1
 RebuildAll=1
 LinkageInformationPresent=0
 COFFileTimeStamp=-1
-Build=5
+Build=7
 [DefinedSymbols]
 Count=0
 [CompilerAdvanced]
@@ -349,19 +349,6 @@ F1=C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\main.c
 F2=C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\clock_init.c
 F3=C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\ports_init.c
 F4=C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\timers_init.c
-[Header2]
-Files=5
-F1=C:\cvavreval\inc\xmega128b1.h
-F2=C:\cvavreval\inc\xmstruct.h
-F3=C:\cvavreval\inc\xmbits_b1.h
-F4=C:\cvavreval\inc\iobits.h
-F5=C:\cvavreval\inc\stddef.h
-[Header3]
-Files=4
-F1=C:\cvavreval\inc\xmega128b1.h
-F2=C:\cvavreval\inc\xmstruct.h
-F3=C:\cvavreval\inc\xmbits_b1.h
-F4=C:\cvavreval\inc\iobits.h
 [BuildInfoCompiler]
 L1=Build configuration: Debug
 L2=Chip: ATxmega128B1
@@ -379,7 +366,7 @@ L13=Enhanced function parameters passing: Mode 2
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 5
+L17=Build: 7
 L18=8039 line(s) compiled
 L19=No errors
 L20=No warnings
@@ -416,6 +403,19 @@ L10=[.dseg] 0x002000 0x002804      0      4      4    8192   0.0%
 L11=[.eseg] 0x000000 0x000000      0      0      0    2048   0.0%
 L12=
 Lines=12
+[Header2]
+Files=5
+F1=C:\cvavreval\inc\xmega128b1.h
+F2=C:\cvavreval\inc\xmstruct.h
+F3=C:\cvavreval\inc\xmbits_b1.h
+F4=C:\cvavreval\inc\iobits.h
+F5=C:\cvavreval\inc\stddef.h
+[Header3]
+Files=4
+F1=C:\cvavreval\inc\xmega128b1.h
+F2=C:\cvavreval\inc\xmstruct.h
+F3=C:\cvavreval\inc\xmbits_b1.h
+F4=C:\cvavreval\inc\iobits.h
 [Header4]
 Files=5
 F1=C:\cvavreval\inc\xmega128b1.h
