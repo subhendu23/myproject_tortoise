@@ -1,7 +1,11 @@
 RAM Allocation [bytes]
 Variable                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-msCounter (timers_init.c)                                                         0x2800       4
+turnOffLedTime (main.c)                                                           0x2800       4
+lastRotationCount (main.c)                                                        0x2804       2
+msCounter (timers_init.c)                                                         0x2806       4
+newCaptureCount (timers_init.c)                                                   0x280A       2
+newCapture (timers_init.c)                                                        0x280C       1
 
 EEPROM Allocation [bytes]
 Variable                                                                          Address   Size
@@ -14,14 +18,14 @@ Variable                                                                        
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-main                                                                              0x000CB     35
-system_clocks_init                                                                0x000EE     44
-event_system_init                                                                 0x0011A     38
-ports_init                                                                        0x00140    231
-vports_init                                                                       0x00227      7
-tc0_disable                                                                       0x0022E      2
-tc1_disable                                                                       0x00230      2
-tcc0_init                                                                         0x00232     95
-tcc0_overflow_isr                                                                 0x00291     25
-tcc1_init                                                                         0x002AA     57
-tcc1_compare_capture_a_isr                                                        0x002E3     17
+main                                                                              0x000CB     83
+system_clocks_init                                                                0x0011E     44
+event_system_init                                                                 0x0014A     38
+ports_init                                                                        0x00170    231
+vports_init                                                                       0x00257      7
+tc0_disable                                                                       0x0025E      2
+tc1_disable                                                                       0x00260      2
+tcc0_init                                                                         0x00262     95
+tcc0_overflow_isr                                                                 0x002C1     25
+tcc1_init                                                                         0x002DA     57
+tcc1_compare_capture_a_isr                                                        0x00313     29

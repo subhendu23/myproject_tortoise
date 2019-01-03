@@ -111,36 +111,65 @@
 ;PCODE: $00000013 VOL: 0
 ; 0000 0059       {
 ; 0000 005A       // Place your code here
-; 0000 005B 	  if((PORTE.IN & 0x01) && getTime() & 0x100)
-;PCODE: $00000014 VOL: 1
+; 0000 005B 	  static uint32_t turnOffLedTime=0;
+; 0000 005C 	  static uint16_t lastRotationCount=0;
+; 0000 005D 	  if(getTime() >= turnOffLedTime)
+;PCODE: $00000014 VOL: 0
 ;PCODE: $00000015 VOL: 0
 ;PCODE: $00000016 VOL: 0
 ;PCODE: $00000017 VOL: 0
 ;PCODE: $00000018 VOL: 0
+; 0000 005E 	  {
+; 0000 005F 		  PORTB.OUT=0xF0;
 ;PCODE: $00000019 VOL: 0
-;PCODE: $0000001A VOL: 0
+;PCODE: $0000001A VOL: 1
+; 0000 0060 	  }
+; 0000 0061 	  else
 ;PCODE: $0000001B VOL: 0
 ;PCODE: $0000001C VOL: 0
+; 0000 0062 	  {
+; 0000 0063 		PORTB.OUT=0x00;
 ;PCODE: $0000001D VOL: 0
-; 0000 005C 	  {
-; 0000 005D 		  PORTB.OUT=0xF0;
-;PCODE: $0000001E VOL: 0
-;PCODE: $0000001F VOL: 1
-; 0000 005E 	  }
-; 0000 005F 	  else
+;PCODE: $0000001E VOL: 1
+; 0000 0064 	  }
+;PCODE: $0000001F VOL: 0
+; 0000 0065 
+; 0000 0066 
+; 0000 0067 	  if(wheelRotationCaptured())
 ;PCODE: $00000020 VOL: 0
 ;PCODE: $00000021 VOL: 0
-; 0000 0060 	  {
-; 0000 0061 		PORTB.OUT=0x00;
 ;PCODE: $00000022 VOL: 0
-;PCODE: $00000023 VOL: 1
-; 0000 0062 	  }
+; 0000 0068 	  {
+; 0000 0069 		  uint32_t newRotationCount;
+; 0000 006A 		  uint32_t rotationDuration;
+; 0000 006B 		  newRotationCount=getWheelRotationCount();
+;PCODE: $00000023 VOL: 0
+;	newRotationCount -> Y+4
+;	rotationDuration -> Y+0
 ;PCODE: $00000024 VOL: 0
-; 0000 0063 
-; 0000 0064       }
 ;PCODE: $00000025 VOL: 0
 ;PCODE: $00000026 VOL: 0
-; 0000 0065 }
+; 0000 006C 		  rotationDuration=newRotationCount-lastRotationCount;
 ;PCODE: $00000027 VOL: 0
 ;PCODE: $00000028 VOL: 0
 ;PCODE: $00000029 VOL: 0
+;PCODE: $0000002A VOL: 0
+;PCODE: $0000002B VOL: 0
+; 0000 006D 		  lastRotationCount=newRotationCount;
+;PCODE: $0000002C VOL: 0
+;PCODE: $0000002D VOL: 0
+; 0000 006E 		  turnOffLedTime=250+getTime();
+;PCODE: $0000002E VOL: 0
+;PCODE: $0000002F VOL: 0
+;PCODE: $00000030 VOL: 0
+; 0000 006F 
+; 0000 0070 	  }
+;PCODE: $00000031 VOL: 0
+; 0000 0071 	  }
+;PCODE: $00000032 VOL: 0
+;PCODE: $00000033 VOL: 0
+;PCODE: $00000034 VOL: 0
+; 0000 0072 }
+;PCODE: $00000035 VOL: 0
+;PCODE: $00000036 VOL: 0
+;PCODE: $00000037 VOL: 0

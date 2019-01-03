@@ -341,61 +341,118 @@
 ;PCODE: $0000008E VOL: 0
 ;PCODE: $0000008F VOL: 0
 ;PCODE: $00000090 VOL: 0
+;static uint16_t newCaptureCount=0;
+;static uint8_t newCapture=0;
 ;
 ;// Timer/Counter TCC1 Compare/Capture A interrupt service routine
 ;interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
-; 0004 00C3 {
+; 0004 00C5 {
 ;PCODE: $00000091 VOL: 0
 ;PCODE: $00000092 VOL: 0
-; 0004 00C4 // Ensure that the Compare/Capture A interrupt flag is cleared
-; 0004 00C5 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
+; 0004 00C6 // Ensure that the Compare/Capture A interrupt flag is cleared
+; 0004 00C7 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
 ;PCODE: $00000093 VOL: 1
 ;PCODE: $00000094 VOL: 0
 ;PCODE: $00000095 VOL: 0
 ;PCODE: $00000096 VOL: 1
 ;PCODE: $00000097 VOL: 0
 ;PCODE: $00000098 VOL: 1
-; 0004 00C6 // Write your code here
-; 0004 00C7 #asm("nop")
+; 0004 00C8 // Write your code here
+; 0004 00C9 //set the new captured counter value
+; 0004 00CA newCaptureCount=TCC1.CNT;
 ;PCODE: $00000099 VOL: 0
-;PCODE: $0000009A VOL: 0
-; 0004 00C8 }
+;PCODE: $0000009A VOL: 1
 ;PCODE: $0000009B VOL: 0
+; 0004 00CB //set a flag to indicate event
+; 0004 00CC newCapture=1;
 ;PCODE: $0000009C VOL: 0
 ;PCODE: $0000009D VOL: 0
-;uint32_t getTime(void){
-; 0004 00C9 uint32_t getTime(void){
+; 0004 00CD }
 ;PCODE: $0000009E VOL: 0
 ;PCODE: $0000009F VOL: 0
-; 0004 00CA 
-; 0004 00CB 	unsigned char s;
-; 0004 00CC 	uint32_t tempValHolder;
-; 0004 00CD 	// Save interrupts enabled/disabled state
-; 0004 00CE 	s=SREG;
 ;PCODE: $000000A0 VOL: 0
+;
+;uint8_t wheelRotationCaptured(void)
+; 0004 00D0 {
 ;PCODE: $000000A1 VOL: 0
-;	s -> R17
-;	tempValHolder -> Y+1
 ;PCODE: $000000A2 VOL: 0
+; 0004 00D1 	//check the flag to see , if a wheel roation happend
+; 0004 00D2 	return newCapture;
 ;PCODE: $000000A3 VOL: 0
-; 0004 00CF 	// Disable interrupts
-; 0004 00D0 	#asm("cli")
 ;PCODE: $000000A4 VOL: 0
-; 0004 00D1 
-; 0004 00D2 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
-; 0004 00D3 	tempValHolder=msCounter;
+; 0004 00D3 }
 ;PCODE: $000000A5 VOL: 0
+;
+;uint16_t getWheelRotationCount(void)
+; 0004 00D6 {
 ;PCODE: $000000A6 VOL: 0
-; 0004 00D4 
-; 0004 00D5 	//restore interrupts enabled/disabled state
-; 0004 00D6 	SREG=s;
 ;PCODE: $000000A7 VOL: 0
+; 0004 00D7 	unsigned char s;
+; 0004 00D8 	uint16_t tempCount;
+; 0004 00D9 	//save the interrupts enabled / disabled state
+; 0004 00DA 	s=SREG;
 ;PCODE: $000000A8 VOL: 0
-; 0004 00D7 	return tempValHolder;
+;	s -> R17
+;	tempCount -> R18,R19
 ;PCODE: $000000A9 VOL: 0
 ;PCODE: $000000AA VOL: 0
+; 0004 00DB 	//disable interrupts
+; 0004 00DC 	#asm("cli")
 ;PCODE: $000000AB VOL: 0
+; 0004 00DD 	// save a copy of the count while the interrupts are disabled
+; 0004 00DE 	tempCount=newCaptureCount;
 ;PCODE: $000000AC VOL: 0
 ;PCODE: $000000AD VOL: 0
-; 0004 00D8 }
+; 0004 00DF 	//clear the flag as well
+; 0004 00E0 	newCapture=0;
 ;PCODE: $000000AE VOL: 0
+;PCODE: $000000AF VOL: 0
+; 0004 00E1 	//restore the interrupts disabled
+; 0004 00E2 	SREG=s;
+;PCODE: $000000B0 VOL: 0
+;PCODE: $000000B1 VOL: 0
+; 0004 00E3 
+; 0004 00E4 	return tempCount;
+;PCODE: $000000B2 VOL: 0
+;PCODE: $000000B3 VOL: 0
+;PCODE: $000000B4 VOL: 0
+;PCODE: $000000B5 VOL: 0
+; 0004 00E5 }
+;PCODE: $000000B6 VOL: 0
+;
+;uint32_t getTime(void){
+; 0004 00E7 uint32_t getTime(void){
+;PCODE: $000000B7 VOL: 0
+;PCODE: $000000B8 VOL: 0
+; 0004 00E8 
+; 0004 00E9 	unsigned char s;
+; 0004 00EA 	uint32_t tempValHolder;
+; 0004 00EB 	// Save interrupts enabled/disabled state
+; 0004 00EC 	s=SREG;
+;PCODE: $000000B9 VOL: 0
+;PCODE: $000000BA VOL: 0
+;	s -> R17
+;	tempValHolder -> Y+1
+;PCODE: $000000BB VOL: 0
+;PCODE: $000000BC VOL: 0
+; 0004 00ED 	// Disable interrupts
+; 0004 00EE 	#asm("cli")
+;PCODE: $000000BD VOL: 0
+; 0004 00EF 
+; 0004 00F0 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
+; 0004 00F1 	tempValHolder=msCounter;
+;PCODE: $000000BE VOL: 0
+;PCODE: $000000BF VOL: 0
+; 0004 00F2 
+; 0004 00F3 	//restore interrupts enabled/disabled state
+; 0004 00F4 	SREG=s;
+;PCODE: $000000C0 VOL: 0
+;PCODE: $000000C1 VOL: 0
+; 0004 00F5 	return tempValHolder;
+;PCODE: $000000C2 VOL: 0
+;PCODE: $000000C3 VOL: 0
+;PCODE: $000000C4 VOL: 0
+;PCODE: $000000C5 VOL: 0
+;PCODE: $000000C6 VOL: 0
+; 0004 00F6 }
+;PCODE: $000000C7 VOL: 0

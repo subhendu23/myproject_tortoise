@@ -19,4 +19,6 @@ void tcc0_init(void);
 // Timer/Counter TCC1 initialization
 void tcc1_init(void);
 uint32_t getTime(void);
+uint8_t wheelRotationCaptured(void);
+uint16_t getWheelRotationCount(void);
 #endif

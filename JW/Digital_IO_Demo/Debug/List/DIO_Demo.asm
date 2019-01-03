@@ -1380,35 +1380,77 @@ _main:
 _0x3:
 ; 0000 0059       {
 ; 0000 005A       // Place your code here
-; 0000 005B 	  if((PORTE.IN & 0x01) && getTime() & 0x100)
-	LDS  R30,1672
-	ANDI R30,LOW(0x1)
-	BREQ _0x7
+; 0000 005B 	  static uint32_t turnOffLedTime=0;
+; 0000 005C 	  static uint16_t lastRotationCount=0;
+; 0000 005D 	  if(getTime() >= turnOffLedTime)
 	RCALL _getTime
-	ANDI R31,HIGH(0x100)
-	BRNE _0x8
-_0x7:
-	RJMP _0x6
-_0x8:
-; 0000 005C 	  {
-; 0000 005D 		  PORTB.OUT=0xF0;
+	MOVW R26,R30
+	MOVW R24,R22
+	LDS  R30,_turnOffLedTime_S0000000001
+	LDS  R31,_turnOffLedTime_S0000000001+1
+	LDS  R22,_turnOffLedTime_S0000000001+2
+	LDS  R23,_turnOffLedTime_S0000000001+3
+	RCALL __CPD21
+	BRLO _0x6
+; 0000 005E 	  {
+; 0000 005F 		  PORTB.OUT=0xF0;
 	LDI  R30,LOW(240)
-	RJMP _0xB
-; 0000 005E 	  }
-; 0000 005F 	  else
-_0x6:
-; 0000 0060 	  {
-; 0000 0061 		PORTB.OUT=0x00;
-	LDI  R30,LOW(0)
-_0xB:
-	STS  1572,R30
-; 0000 0062 	  }
-; 0000 0063 
-; 0000 0064       }
-	RJMP _0x3
-; 0000 0065 }
-_0xA:
 	RJMP _0xA
+; 0000 0060 	  }
+; 0000 0061 	  else
+_0x6:
+; 0000 0062 	  {
+; 0000 0063 		PORTB.OUT=0x00;
+	LDI  R30,LOW(0)
+_0xA:
+	STS  1572,R30
+; 0000 0064 	  }
+; 0000 0065 
+; 0000 0066 
+; 0000 0067 	  if(wheelRotationCaptured())
+	RCALL _wheelRotationCaptured
+	CPI  R30,0
+	BREQ _0x8
+; 0000 0068 	  {
+; 0000 0069 		  uint32_t newRotationCount;
+; 0000 006A 		  uint32_t rotationDuration;
+; 0000 006B 		  newRotationCount=getWheelRotationCount();
+	SBIW R28,8
+;	newRotationCount -> Y+4
+;	rotationDuration -> Y+0
+	RCALL _getWheelRotationCount
+	CLR  R22
+	CLR  R23
+	__PUTD1S 4
+; 0000 006C 		  rotationDuration=newRotationCount-lastRotationCount;
+	LDS  R30,_lastRotationCount_S0000000001
+	LDS  R31,_lastRotationCount_S0000000001+1
+	__GETD2S 4
+	CLR  R22
+	CLR  R23
+	RCALL __SUBD21
+	RCALL __PUTD2S0
+; 0000 006D 		  lastRotationCount=newRotationCount;
+	LDD  R30,Y+4
+	LDD  R31,Y+4+1
+	STS  _lastRotationCount_S0000000001,R30
+	STS  _lastRotationCount_S0000000001+1,R31
+; 0000 006E 		  turnOffLedTime=250+getTime();
+	RCALL _getTime
+	__ADDD1N 250
+	STS  _turnOffLedTime_S0000000001,R30
+	STS  _turnOffLedTime_S0000000001+1,R31
+	STS  _turnOffLedTime_S0000000001+2,R22
+	STS  _turnOffLedTime_S0000000001+3,R23
+; 0000 006F 
+; 0000 0070 	  }
+	ADIW R28,8
+; 0000 0071 	  }
+_0x8:
+	RJMP _0x3
+; 0000 0072 }
+_0x9:
+	RJMP _0x9
 ; .FEND
 ;/*******************************************************
 ;System clock initialization created by the
@@ -2577,67 +2619,125 @@ _tcc1_init:
 	LD   R17,Y+
 	RET
 ; .FEND
+;static uint16_t newCaptureCount=0;
+;static uint8_t newCapture=0;
 ;
 ;// Timer/Counter TCC1 Compare/Capture A interrupt service routine
 ;interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
-; 0004 00C3 {
+; 0004 00C5 {
 _tcc1_compare_capture_a_isr:
 ; .FSTART _tcc1_compare_capture_a_isr
 	ST   -Y,R30
+	ST   -Y,R31
 	IN   R30,SREG
 	ST   -Y,R30
-; 0004 00C4 // Ensure that the Compare/Capture A interrupt flag is cleared
-; 0004 00C5 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
+; 0004 00C6 // Ensure that the Compare/Capture A interrupt flag is cleared
+; 0004 00C7 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
 	LDS  R30,2124
 	ANDI R30,LOW(0x10)
 	BREQ _0x80003
 	LDS  R30,2124
 	ORI  R30,0x10
 	STS  2124,R30
-; 0004 00C6 // Write your code here
-; 0004 00C7 #asm("nop")
+; 0004 00C8 // Write your code here
+; 0004 00C9 //set the new captured counter value
+; 0004 00CA newCaptureCount=TCC1.CNT;
 _0x80003:
-	NOP
-; 0004 00C8 }
+	LDS  R30,2144
+	LDS  R31,2144+1
+	STS  _newCaptureCount_G004,R30
+	STS  _newCaptureCount_G004+1,R31
+; 0004 00CB //set a flag to indicate event
+; 0004 00CC newCapture=1;
+	LDI  R30,LOW(1)
+	STS  _newCapture_G004,R30
+; 0004 00CD }
 	LD   R30,Y+
 	OUT  SREG,R30
+	LD   R31,Y+
 	LD   R30,Y+
 	RETI
 ; .FEND
+;
+;uint8_t wheelRotationCaptured(void)
+; 0004 00D0 {
+_wheelRotationCaptured:
+; .FSTART _wheelRotationCaptured
+; 0004 00D1 	//check the flag to see , if a wheel roation happend
+; 0004 00D2 	return newCapture;
+	LDS  R30,_newCapture_G004
+	RET
+; 0004 00D3 }
+; .FEND
+;
+;uint16_t getWheelRotationCount(void)
+; 0004 00D6 {
+_getWheelRotationCount:
+; .FSTART _getWheelRotationCount
+; 0004 00D7 	unsigned char s;
+; 0004 00D8 	uint16_t tempCount;
+; 0004 00D9 	//save the interrupts enabled / disabled state
+; 0004 00DA 	s=SREG;
+	RCALL __SAVELOCR4
+;	s -> R17
+;	tempCount -> R18,R19
+	IN   R17,63
+; 0004 00DB 	//disable interrupts
+; 0004 00DC 	#asm("cli")
+	CLI
+; 0004 00DD 	// save a copy of the count while the interrupts are disabled
+; 0004 00DE 	tempCount=newCaptureCount;
+	__GETWRMN 18,19,0,_newCaptureCount_G004
+; 0004 00DF 	//clear the flag as well
+; 0004 00E0 	newCapture=0;
+	LDI  R30,LOW(0)
+	STS  _newCapture_G004,R30
+; 0004 00E1 	//restore the interrupts disabled
+; 0004 00E2 	SREG=s;
+	OUT  0x3F,R17
+; 0004 00E3 
+; 0004 00E4 	return tempCount;
+	MOVW R30,R18
+	RCALL __LOADLOCR4
+	ADIW R28,4
+	RET
+; 0004 00E5 }
+; .FEND
+;
 ;uint32_t getTime(void){
-; 0004 00C9 uint32_t getTime(void){
+; 0004 00E7 uint32_t getTime(void){
 _getTime:
 ; .FSTART _getTime
-; 0004 00CA 
-; 0004 00CB 	unsigned char s;
-; 0004 00CC 	uint32_t tempValHolder;
-; 0004 00CD 	// Save interrupts enabled/disabled state
-; 0004 00CE 	s=SREG;
+; 0004 00E8 
+; 0004 00E9 	unsigned char s;
+; 0004 00EA 	uint32_t tempValHolder;
+; 0004 00EB 	// Save interrupts enabled/disabled state
+; 0004 00EC 	s=SREG;
 	SBIW R28,4
 	ST   -Y,R17
 ;	s -> R17
 ;	tempValHolder -> Y+1
 	IN   R17,63
-; 0004 00CF 	// Disable interrupts
-; 0004 00D0 	#asm("cli")
+; 0004 00ED 	// Disable interrupts
+; 0004 00EE 	#asm("cli")
 	CLI
-; 0004 00D1 
-; 0004 00D2 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
-; 0004 00D3 	tempValHolder=msCounter;
+; 0004 00EF 
+; 0004 00F0 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
+; 0004 00F1 	tempValHolder=msCounter;
 	LDS  R30,_msCounter_G004
 	LDS  R31,_msCounter_G004+1
 	LDS  R22,_msCounter_G004+2
 	LDS  R23,_msCounter_G004+3
 	__PUTD1S 1
-; 0004 00D4 
-; 0004 00D5 	//restore interrupts enabled/disabled state
-; 0004 00D6 	SREG=s;
+; 0004 00F2 
+; 0004 00F3 	//restore interrupts enabled/disabled state
+; 0004 00F4 	SREG=s;
 	OUT  0x3F,R17
-; 0004 00D7 	return tempValHolder;
+; 0004 00F5 	return tempValHolder;
 	LDD  R17,Y+0
 	ADIW R28,5
 	RET
-; 0004 00D8 }
+; 0004 00F6 }
 ; .FEND
 
 	.CSEG
@@ -2647,8 +2747,16 @@ _getTime:
 	.CSEG
 
 	.DSEG
+_turnOffLedTime_S0000000001:
+	.BYTE 0x4
+_lastRotationCount_S0000000001:
+	.BYTE 0x2
 _msCounter_G004:
 	.BYTE 0x4
+_newCaptureCount_G004:
+	.BYTE 0x2
+_newCapture_G004:
+	.BYTE 0x1
 
 	.CSEG
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:7 WORDS
@@ -2666,6 +2774,31 @@ SUBOPT_0x0:
 ;RUNTIME LIBRARY
 
 	.CSEG
+__SAVELOCR4:
+	ST   -Y,R19
+__SAVELOCR3:
+	ST   -Y,R18
+__SAVELOCR2:
+	ST   -Y,R17
+	ST   -Y,R16
+	RET
+
+__LOADLOCR4:
+	LDD  R19,Y+3
+__LOADLOCR3:
+	LDD  R18,Y+2
+__LOADLOCR2:
+	LDD  R17,Y+1
+	LD   R16,Y
+	RET
+
+__SUBD21:
+	SUB  R26,R30
+	SBC  R27,R31
+	SBC  R24,R22
+	SBC  R25,R23
+	RET
+
 __GETD1P_INC:
 	LD   R30,X+
 	LD   R31,X+
@@ -2678,6 +2811,20 @@ __PUTDP1_DEC:
 	ST   -X,R22
 	ST   -X,R31
 	ST   -X,R30
+	RET
+
+__PUTD2S0:
+	ST   Y,R26
+	STD  Y+1,R27
+	STD  Y+2,R24
+	STD  Y+3,R25
+	RET
+
+__CPD21:
+	CP   R26,R30
+	CPC  R27,R31
+	CPC  R24,R22
+	CPC  R25,R23
 	RET
 
 ;END OF CODE MARKER

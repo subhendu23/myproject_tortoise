@@ -189,6 +189,8 @@ TCC1.CCB=0x0000;
 // Restore interrupts enabled/disabled state
 SREG=s;
 }
+static uint16_t newCaptureCount=0;
+static uint8_t newCapture=0;
 
 // Timer/Counter TCC1 Compare/Capture A interrupt service routine
 interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
@@ -196,8 +198,36 @@ interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
 // Ensure that the Compare/Capture A interrupt flag is cleared
 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
 // Write your code here
-#asm("nop")
+//set the new captured counter value
+newCaptureCount=TCC1.CNT;
+//set a flag to indicate event
+newCapture=1;
 }
+
+uint8_t wheelRotationCaptured(void)
+{
+	//check the flag to see , if a wheel roation happend
+	return newCapture;
+}
+
+uint16_t getWheelRotationCount(void)
+{
+	unsigned char s;
+	uint16_t tempCount;
+	//save the interrupts enabled / disabled state
+	s=SREG;
+	//disable interrupts
+	#asm("cli")
+	// save a copy of the count while the interrupts are disabled 
+	tempCount=newCaptureCount;
+	//clear the flag as well
+	newCapture=0;
+	//restore the interrupts disabled
+	SREG=s;
+	
+	return tempCount;
+}
+
 uint32_t getTime(void){
 	
 	unsigned char s;

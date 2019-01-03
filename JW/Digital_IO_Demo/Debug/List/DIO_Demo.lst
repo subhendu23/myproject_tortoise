@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Wed Jan 02 23:35:33 2019
+AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Thu Jan 03 13:00:27 2019
 
                  
                  
@@ -1141,7 +1141,7 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
 000016 940c 0000 	JMP  0x00
 000018 940c 0000 	JMP  0x00
 00001a 940c 0000 	JMP  0x00
-00001c 940c 0291 	JMP  _tcc0_overflow_isr
+00001c 940c 02c1 	JMP  _tcc0_overflow_isr
 00001e 940c 0000 	JMP  0x00
 000020 940c 0000 	JMP  0x00
 000022 940c 0000 	JMP  0x00
@@ -1149,7 +1149,7 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
 000026 940c 0000 	JMP  0x00
 000028 940c 0000 	JMP  0x00
 00002a 940c 0000 	JMP  0x00
-00002c 940c 02e3 	JMP  _tcc1_compare_capture_a_isr
+00002c 940c 0313 	JMP  _tcc1_compare_capture_a_isr
 00002e 940c 0000 	JMP  0x00
 000030 940c 0000 	JMP  0x00
 000032 940c 0000 	JMP  0x00
@@ -1360,27 +1360,27 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0000 0042 
                  ; 0000 0043 // System clocks initialization
                  ; 0000 0044 system_clocks_init();
-0000d8 d015      	RCALL _system_clocks_init
+0000d8 d045      	RCALL _system_clocks_init
                  ; 0000 0045 
                  ; 0000 0046 // Event system initialization
                  ; 0000 0047 event_system_init();
-0000d9 d040      	RCALL _event_system_init
+0000d9 d070      	RCALL _event_system_init
                  ; 0000 0048 
                  ; 0000 0049 // Ports initialization
                  ; 0000 004A ports_init();
-0000da d065      	RCALL _ports_init
+0000da d095      	RCALL _ports_init
                  ; 0000 004B 
                  ; 0000 004C // Virtual Ports initialization
                  ; 0000 004D vports_init();
-0000db d14b      	RCALL _vports_init
+0000db d17b      	RCALL _vports_init
                  ; 0000 004E 
                  ; 0000 004F // Timer/Counter TCC0 initialization
                  ; 0000 0050 tcc0_init();
-0000dc d155      	RCALL _tcc0_init
+0000dc d185      	RCALL _tcc0_init
                  ; 0000 0051 
                  ; 0000 0052 // Timer/Counter TCC1 initialization
                  ; 0000 0053 tcc1_init();
-0000dd d1cc      	RCALL _tcc1_init
+0000dd d1fc      	RCALL _tcc1_init
                  ; 0000 0054 
                  ; 0000 0055 // Globally enable interrupts
                  ; 0000 0056 #asm("sei")
@@ -1390,35 +1390,92 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  _0x3:
                  ; 0000 0059       {
                  ; 0000 005A       // Place your code here
-                 ; 0000 005B 	  if((PORTE.IN & 0x01) && getTime() & 0x100)
-0000df 91e0 0688 	LDS  R30,1672
-0000e1 70e1      	ANDI R30,LOW(0x1)
-0000e2 f019      	BREQ _0x7
-0000e3 d210      	RCALL _getTime
-0000e4 70f1      	ANDI R31,HIGH(0x100)
-0000e5 f409      	BRNE _0x8
-                 _0x7:
-0000e6 c002      	RJMP _0x6
-                 _0x8:
-                 ; 0000 005C 	  {
-                 ; 0000 005D 		  PORTB.OUT=0xF0;
-0000e7 efe0      	LDI  R30,LOW(240)
-0000e8 c001      	RJMP _0xB
-                 ; 0000 005E 	  }
-                 ; 0000 005F 	  else
+                 ; 0000 005B 	  static uint32_t turnOffLedTime=0;
+                 ; 0000 005C 	  static uint16_t lastRotationCount=0;
+                 ; 0000 005D 	  if(getTime() >= turnOffLedTime)
+0000df d262      	RCALL _getTime
+0000e0 01df      	MOVW R26,R30
+0000e1 01cb      	MOVW R24,R22
+0000e2 91e0 2800 	LDS  R30,_turnOffLedTime_S0000000001
+0000e4 91f0 2801 	LDS  R31,_turnOffLedTime_S0000000001+1
+0000e6 9160 2802 	LDS  R22,_turnOffLedTime_S0000000001+2
+0000e8 9170 2803 	LDS  R23,_turnOffLedTime_S0000000001+3
+0000ea d292      	RCALL __CPD21
+0000eb f010      	BRLO _0x6
+                 ; 0000 005E 	  {
+                 ; 0000 005F 		  PORTB.OUT=0xF0;
+0000ec efe0      	LDI  R30,LOW(240)
+0000ed c001      	RJMP _0xA
+                 ; 0000 0060 	  }
+                 ; 0000 0061 	  else
                  _0x6:
-                 ; 0000 0060 	  {
-                 ; 0000 0061 		PORTB.OUT=0x00;
-0000e9 e0e0      	LDI  R30,LOW(0)
-                 _0xB:
-0000ea 93e0 0624 	STS  1572,R30
-                 ; 0000 0062 	  }
-                 ; 0000 0063 
-                 ; 0000 0064       }
-0000ec cff2      	RJMP _0x3
-                 ; 0000 0065 }
+                 ; 0000 0062 	  {
+                 ; 0000 0063 		PORTB.OUT=0x00;
+0000ee e0e0      	LDI  R30,LOW(0)
                  _0xA:
-0000ed cfff      	RJMP _0xA
+0000ef 93e0 0624 	STS  1572,R30
+                 ; 0000 0064 	  }
+                 ; 0000 0065 
+                 ; 0000 0066 
+                 ; 0000 0067 	  if(wheelRotationCaptured())
+0000f1 d23e      	RCALL _wheelRotationCaptured
+0000f2 30e0      	CPI  R30,0
+0000f3 f141      	BREQ _0x8
+                 ; 0000 0068 	  {
+                 ; 0000 0069 		  uint32_t newRotationCount;
+                 ; 0000 006A 		  uint32_t rotationDuration;
+                 ; 0000 006B 		  newRotationCount=getWheelRotationCount();
+0000f4 9728      	SBIW R28,8
+                 ;	newRotationCount -> Y+4
+                 ;	rotationDuration -> Y+0
+0000f5 d23d      	RCALL _getWheelRotationCount
+0000f6 2766      	CLR  R22
+0000f7 2777      	CLR  R23
+                +
+0000f8 83ec     +STD Y + 4 , R30
+0000f9 83fd     +STD Y + 4 + 1 , R31
+0000fa 836e     +STD Y + 4 + 2 , R22
+0000fb 837f     +STD Y + 4 + 3 , R23
+                 	__PUTD1S 4
+                 ; 0000 006C 		  rotationDuration=newRotationCount-lastRotationCount;
+0000fc 91e0 2804 	LDS  R30,_lastRotationCount_S0000000001
+0000fe 91f0 2805 	LDS  R31,_lastRotationCount_S0000000001+1
+                +
+000100 81ac     +LDD R26 , Y + 4
+000101 81bd     +LDD R27 , Y + 4 + 1
+000102 818e     +LDD R24 , Y + 4 + 2
+000103 819f     +LDD R25 , Y + 4 + 3
+                 	__GETD2S 4
+000104 2766      	CLR  R22
+000105 2777      	CLR  R23
+000106 d262      	RCALL __SUBD21
+000107 d270      	RCALL __PUTD2S0
+                 ; 0000 006D 		  lastRotationCount=newRotationCount;
+000108 81ec      	LDD  R30,Y+4
+000109 81fd      	LDD  R31,Y+4+1
+00010a 93e0 2804 	STS  _lastRotationCount_S0000000001,R30
+00010c 93f0 2805 	STS  _lastRotationCount_S0000000001+1,R31
+                 ; 0000 006E 		  turnOffLedTime=250+getTime();
+00010e d233      	RCALL _getTime
+                +
+00010f 50e6     +SUBI R30 , LOW ( - 250 )
+000110 4fff     +SBCI R31 , HIGH ( - 250 )
+000111 4f6f     +SBCI R22 , BYTE3 ( - 250 )
+000112 4f7f     +SBCI R23 , BYTE4 ( - 250 )
+                 	__ADDD1N 250
+000113 93e0 2800 	STS  _turnOffLedTime_S0000000001,R30
+000115 93f0 2801 	STS  _turnOffLedTime_S0000000001+1,R31
+000117 9360 2802 	STS  _turnOffLedTime_S0000000001+2,R22
+000119 9370 2803 	STS  _turnOffLedTime_S0000000001+3,R23
+                 ; 0000 006F 
+                 ; 0000 0070 	  }
+00011b 9628      	ADIW R28,8
+                 ; 0000 0071 	  }
+                 _0x8:
+00011c cfc2      	RJMP _0x3
+                 ; 0000 0072 }
+                 _0x9:
+00011d cfff      	RJMP _0x9
                  ; .FEND
                  ;/*******************************************************
                  ;System clock initialization created by the
@@ -1448,32 +1505,32 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0001 0016 #pragma optsize-
                  ; 0001 0017 // Save interrupts enabled/disabled state
                  ; 0001 0018 s=SREG;
-0000ee 931a      	ST   -Y,R17
-0000ef 930a      	ST   -Y,R16
+00011e 931a      	ST   -Y,R17
+00011f 930a      	ST   -Y,R16
                  ;	n -> R17
                  ;	s -> R16
-0000f0 b70f      	IN   R16,63
+000120 b70f      	IN   R16,63
                  ; 0001 0019 // Disable interrupts
                  ; 0001 001A #asm("cli")
-0000f1 94f8      	CLI
+000121 94f8      	CLI
                  ; 0001 001B 
                  ; 0001 001C // Internal 2 MHz RC oscillator initialization
                  ; 0001 001D // Enable the internal 2 MHz RC oscillator
                  ; 0001 001E OSC.CTRL|=OSC_RC2MEN_bm;
-0000f2 91e0 0050 	LDS  R30,80
-0000f4 60e1      	ORI  R30,1
-0000f5 93e0 0050 	STS  80,R30
+000122 91e0 0050 	LDS  R30,80
+000124 60e1      	ORI  R30,1
+000125 93e0 0050 	STS  80,R30
                  ; 0001 001F // Wait for the internal 2 MHz RC oscillator to stabilize
                  ; 0001 0020 while ((OSC.STATUS & OSC_RC2MRDY_bm)==0);
                  _0x20003:
-0000f7 91e0 0051 	LDS  R30,81
-0000f9 70e1      	ANDI R30,LOW(0x1)
-0000fa f3e1      	BREQ _0x20003
+000127 91e0 0051 	LDS  R30,81
+000129 70e1      	ANDI R30,LOW(0x1)
+00012a f3e1      	BREQ _0x20003
                  ; 0001 0021 
                  ; 0001 0022 // Disable the auto-calibration of the internal 2 MHz RC oscillator
                  ; 0001 0023 DFLLRC2M.CTRL=0<<DFLL_ENABLE_bp;
-0000fb e0e0      	LDI  R30,LOW(0)
-0000fc 93e0 0068 	STS  104,R30
+00012b e0e0      	LDI  R30,LOW(0)
+00012c 93e0 0068 	STS  104,R30
                  ; 0001 0024 
                  ; 0001 0025 // System Clock prescaler A division factor: 1
                  ; 0001 0026 // System Clock prescalers B & C division factors: B:1, C:1
@@ -1483,44 +1540,44 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0001 002A // ClkCPU:  2000.000 kHz
                  ; 0001 002B n=(CLK.PSCTRL & (~(CLK_PSADIV_gm | CLK_PSBCDIV1_bm | CLK_PSBCDIV0_bm))) |
                  ; 0001 002C 	CLK_PSADIV_1_gc | CLK_PSBCDIV_1_1_gc;
-0000fe 91e0 0041 	LDS  R30,65
-000100 78e0      	ANDI R30,LOW(0x80)
-000101 2f1e      	MOV  R17,R30
+00012e 91e0 0041 	LDS  R30,65
+000130 78e0      	ANDI R30,LOW(0x80)
+000131 2f1e      	MOV  R17,R30
                  ; 0001 002D CCP=CCP_IOREG_gc;
-000102 ede8      	LDI  R30,LOW(216)
-000103 bfe4      	OUT  0x34,R30
+000132 ede8      	LDI  R30,LOW(216)
+000133 bfe4      	OUT  0x34,R30
                  ; 0001 002E CLK.PSCTRL=n;
-000104 9310 0041 	STS  65,R17
+000134 9310 0041 	STS  65,R17
                  ; 0001 002F 
                  ; 0001 0030 // Select the system clock source: 2 MHz Internal RC Osc.
                  ; 0001 0031 n=(CLK.CTRL & (~CLK_SCLKSEL_gm)) | CLK_SCLKSEL_RC2M_gc;
-000106 91e0 0040 	LDS  R30,64
-000108 7fe8      	ANDI R30,LOW(0xF8)
-000109 2f1e      	MOV  R17,R30
+000136 91e0 0040 	LDS  R30,64
+000138 7fe8      	ANDI R30,LOW(0xF8)
+000139 2f1e      	MOV  R17,R30
                  ; 0001 0032 CCP=CCP_IOREG_gc;
-00010a ede8      	LDI  R30,LOW(216)
-00010b bfe4      	OUT  0x34,R30
+00013a ede8      	LDI  R30,LOW(216)
+00013b bfe4      	OUT  0x34,R30
                  ; 0001 0033 CLK.CTRL=n;
-00010c 9310 0040 	STS  64,R17
+00013c 9310 0040 	STS  64,R17
                  ; 0001 0034 
                  ; 0001 0035 // Disable the unused oscillators: 32 kHz, 32 MHz, external clock/crystal oscillator, PLL
                  ; 0001 0036 OSC.CTRL&= ~(OSC_RC32KEN_bm | OSC_RC32MEN_bm | OSC_XOSCEN_bm | OSC_PLLEN_bm);
-00010e 91e0 0050 	LDS  R30,80
-000110 7ee1      	ANDI R30,LOW(0xE1)
-000111 93e0 0050 	STS  80,R30
+00013e 91e0 0050 	LDS  R30,80
+000140 7ee1      	ANDI R30,LOW(0xE1)
+000141 93e0 0050 	STS  80,R30
                  ; 0001 0037 
                  ; 0001 0038 // ClkPer output disabled
                  ; 0001 0039 PORTCFG.CLKEVOUT&= ~(PORTCFG_CLKOUTSEL_gm | PORTCFG_CLKOUT_gm);
-000113 91e0 00b4 	LDS  R30,180
-000115 7fe0      	ANDI R30,LOW(0xF0)
-000116 93e0 00b4 	STS  180,R30
+000143 91e0 00b4 	LDS  R30,180
+000145 7fe0      	ANDI R30,LOW(0xF0)
+000146 93e0 00b4 	STS  180,R30
                  ; 0001 003A // Restore interrupts enabled/disabled state
                  ; 0001 003B SREG=s;
-000118 bf0f      	OUT  0x3F,R16
+000148 bf0f      	OUT  0x3F,R16
                  ; 0001 003C // Restore optimization for size if needed
                  ; 0001 003D #pragma optsize_default
                  ; 0001 003E }
-000119 c174      	RJMP _0x2060001
+000149 c174      	RJMP _0x2060001
                  ; .FEND
                  ;
                  ;/*******************************************************
@@ -1544,53 +1601,53 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; .FSTART _event_system_init
                  ; 0002 0010 // Event System Channel 0 source: Port A, Pin0
                  ; 0002 0011 EVSYS.CH0MUX=EVSYS_CHMUX_PORTA_PIN0_gc;
-00011a e5e0      	LDI  R30,LOW(80)
-00011b 93e0 0180 	STS  384,R30
+00014a e5e0      	LDI  R30,LOW(80)
+00014b 93e0 0180 	STS  384,R30
                  ; 0002 0012 // Event System Channel 1 source: None
                  ; 0002 0013 EVSYS.CH1MUX=EVSYS_CHMUX_OFF_gc;
-00011d e0e0      	LDI  R30,LOW(0)
-00011e 93e0 0181 	STS  385,R30
+00014d e0e0      	LDI  R30,LOW(0)
+00014e 93e0 0181 	STS  385,R30
                  ; 0002 0014 // Event System Channel 2 source: None
                  ; 0002 0015 EVSYS.CH2MUX=EVSYS_CHMUX_OFF_gc;
-000120 93e0 0182 	STS  386,R30
+000150 93e0 0182 	STS  386,R30
                  ; 0002 0016 // Event System Channel 3 source: None
                  ; 0002 0017 EVSYS.CH3MUX=EVSYS_CHMUX_OFF_gc;
-000122 93e0 0183 	STS  387,R30
+000152 93e0 0183 	STS  387,R30
                  ; 0002 0018 // Event System Channel 0 Digital Filter Coefficient: 8 Samples
                  ; 0002 0019 // Quadrature Decoder: Off
                  ; 0002 001A EVSYS.CH0CTRL=(EVSYS.CH0CTRL & (~(EVSYS_QDIRM_gm | EVSYS_QDIEN_bm | EVSYS_QDEN_bm | EVSYS_DIGFILT_gm))) |
                  ; 0002 001B 	EVSYS_DIGFILT_8SAMPLES_gc;
-000124 91e0 0188 	LDS  R30,392
-000126 78e0      	ANDI R30,LOW(0x80)
-000127 60e7      	ORI  R30,LOW(0x7)
-000128 93e0 0188 	STS  392,R30
+000154 91e0 0188 	LDS  R30,392
+000156 78e0      	ANDI R30,LOW(0x80)
+000157 60e7      	ORI  R30,LOW(0x7)
+000158 93e0 0188 	STS  392,R30
                  ; 0002 001C // Event System Channel 1 Digital Filter Coefficient: 1 Sample
                  ; 0002 001D EVSYS.CH1CTRL=EVSYS_DIGFILT_1SAMPLE_gc;
-00012a e0e0      	LDI  R30,LOW(0)
-00012b 93e0 0189 	STS  393,R30
+00015a e0e0      	LDI  R30,LOW(0)
+00015b 93e0 0189 	STS  393,R30
                  ; 0002 001E // Event System Channel 2 Digital Filter Coefficient: 1 Sample
                  ; 0002 001F // Quadrature Decoder: Off
                  ; 0002 0020 EVSYS.CH2CTRL=(EVSYS.CH2CTRL & (~(EVSYS_QDIRM_gm | EVSYS_QDIEN_bm | EVSYS_QDEN_bm | EVSYS_DIGFILT_gm))) |
                  ; 0002 0021 	EVSYS_DIGFILT_1SAMPLE_gc;
-00012d 91e0 018a 	LDS  R30,394
-00012f 78e0      	ANDI R30,LOW(0x80)
-000130 93e0 018a 	STS  394,R30
+00015d 91e0 018a 	LDS  R30,394
+00015f 78e0      	ANDI R30,LOW(0x80)
+000160 93e0 018a 	STS  394,R30
                  ; 0002 0022 // Event System Channel 3 Digital Filter Coefficient: 1 Sample
                  ; 0002 0023 EVSYS.CH3CTRL=EVSYS_DIGFILT_1SAMPLE_gc;
-000132 e0e0      	LDI  R30,LOW(0)
-000133 93e0 018b 	STS  395,R30
+000162 e0e0      	LDI  R30,LOW(0)
+000163 93e0 018b 	STS  395,R30
                  ; 0002 0024 
                  ; 0002 0025 // Event System Channel output: Disabled
                  ; 0002 0026 PORTCFG.CLKEVOUT&= ~PORTCFG_EVOUT_gm;
-000135 91e0 00b4 	LDS  R30,180
-000137 7cef      	ANDI R30,LOW(0xCF)
-000138 93e0 00b4 	STS  180,R30
+000165 91e0 00b4 	LDS  R30,180
+000167 7cef      	ANDI R30,LOW(0xCF)
+000168 93e0 00b4 	STS  180,R30
                  ; 0002 0027 PORTCFG.EVOUTSEL&= ~PORTCFG_EVOUTSEL_gm;
-00013a 91e0 00b6 	LDS  R30,182
-00013c 7fe3      	ANDI R30,LOW(0xF3)
-00013d 93e0 00b6 	STS  182,R30
+00016a 91e0 00b6 	LDS  R30,182
+00016c 7fe3      	ANDI R30,LOW(0xF3)
+00016d 93e0 00b6 	STS  182,R30
                  ; 0002 0028 }
-00013f 9508      	RET
+00016f 9508      	RET
                  ; .FEND
                  ;
                  ;/*******************************************************
@@ -1615,8 +1672,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0010 // PORTA initialization
                  ; 0003 0011 // OUT register
                  ; 0003 0012 PORTA.OUT=0x00;
-000140 e0e0      	LDI  R30,LOW(0)
-000141 93e0 0604 	STS  1540,R30
+000170 e0e0      	LDI  R30,LOW(0)
+000171 93e0 0604 	STS  1540,R30
                  ; 0003 0013 // Pin0: Input
                  ; 0003 0014 // Pin1: Input
                  ; 0003 0015 // Pin2: Input
@@ -1626,56 +1683,56 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0019 // Pin6: Input
                  ; 0003 001A // Pin7: Input
                  ; 0003 001B PORTA.DIR=0x00;
-000143 93e0 0600 	STS  1536,R30
+000173 93e0 0600 	STS  1536,R30
                  ; 0003 001C // Pin0 Output/Pull configuration: Totempole/Pull-up (on input)
                  ; 0003 001D // Pin0 Input/Sense configuration: Sense falling edge
                  ; 0003 001E // Pin0 Inverted: Off
                  ; 0003 001F PORTA.PIN0CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_FALLING_gc;
-000145 e1ea      	LDI  R30,LOW(26)
-000146 93e0 0610 	STS  1552,R30
+000175 e1ea      	LDI  R30,LOW(26)
+000176 93e0 0610 	STS  1552,R30
                  ; 0003 0020 // Pin1 Output/Pull configuration: Totempole/No
                  ; 0003 0021 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 0022 // Pin1 Inverted: Off
                  ; 0003 0023 PORTA.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000148 e0e0      	LDI  R30,LOW(0)
-000149 93e0 0611 	STS  1553,R30
+000178 e0e0      	LDI  R30,LOW(0)
+000179 93e0 0611 	STS  1553,R30
                  ; 0003 0024 // Pin2 Output/Pull configuration: Totempole/No
                  ; 0003 0025 // Pin2 Input/Sense configuration: Sense both edges
                  ; 0003 0026 // Pin2 Inverted: Off
                  ; 0003 0027 PORTA.PIN2CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00014b 93e0 0612 	STS  1554,R30
+00017b 93e0 0612 	STS  1554,R30
                  ; 0003 0028 // Pin3 Output/Pull configuration: Totempole/No
                  ; 0003 0029 // Pin3 Input/Sense configuration: Sense both edges
                  ; 0003 002A // Pin3 Inverted: Off
                  ; 0003 002B PORTA.PIN3CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00014d 93e0 0613 	STS  1555,R30
+00017d 93e0 0613 	STS  1555,R30
                  ; 0003 002C // Pin4 Output/Pull configuration: Totempole/No
                  ; 0003 002D // Pin4 Input/Sense configuration: Sense both edges
                  ; 0003 002E // Pin4 Inverted: Off
                  ; 0003 002F PORTA.PIN4CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00014f 93e0 0614 	STS  1556,R30
+00017f 93e0 0614 	STS  1556,R30
                  ; 0003 0030 // Pin5 Output/Pull configuration: Totempole/No
                  ; 0003 0031 // Pin5 Input/Sense configuration: Sense both edges
                  ; 0003 0032 // Pin5 Inverted: Off
                  ; 0003 0033 PORTA.PIN5CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000151 93e0 0615 	STS  1557,R30
+000181 93e0 0615 	STS  1557,R30
                  ; 0003 0034 // Pin6 Output/Pull configuration: Totempole/No
                  ; 0003 0035 // Pin6 Input/Sense configuration: Sense both edges
                  ; 0003 0036 // Pin6 Inverted: Off
                  ; 0003 0037 PORTA.PIN6CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000153 93e0 0616 	STS  1558,R30
+000183 93e0 0616 	STS  1558,R30
                  ; 0003 0038 // Pin7 Output/Pull configuration: Totempole/No
                  ; 0003 0039 // Pin7 Input/Sense configuration: Sense both edges
                  ; 0003 003A // Pin7 Inverted: Off
                  ; 0003 003B PORTA.PIN7CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000155 93e0 0617 	STS  1559,R30
+000185 93e0 0617 	STS  1559,R30
                  ; 0003 003C // Interrupt 0 level: Disabled
                  ; 0003 003D // Interrupt 1 level: Disabled
                  ; 0003 003E PORTA.INTCTRL=(PORTA.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 003F 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-000157 91e0 0609 	LDS  R30,1545
-000159 7fe0      	ANDI R30,LOW(0xF0)
-00015a 93e0 0609 	STS  1545,R30
+000187 91e0 0609 	LDS  R30,1545
+000189 7fe0      	ANDI R30,LOW(0xF0)
+00018a 93e0 0609 	STS  1545,R30
                  ; 0003 0040 // Pin0 Pin Change interrupt 0: Off
                  ; 0003 0041 // Pin1 Pin Change interrupt 0: Off
                  ; 0003 0042 // Pin2 Pin Change interrupt 0: Off
@@ -1685,8 +1742,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0046 // Pin6 Pin Change interrupt 0: Off
                  ; 0003 0047 // Pin7 Pin Change interrupt 0: Off
                  ; 0003 0048 PORTA.INT0MASK=0x00;
-00015c e0e0      	LDI  R30,LOW(0)
-00015d 93e0 060a 	STS  1546,R30
+00018c e0e0      	LDI  R30,LOW(0)
+00018d 93e0 060a 	STS  1546,R30
                  ; 0003 0049 // Pin0 Pin Change interrupt 1: Off
                  ; 0003 004A // Pin1 Pin Change interrupt 1: Off
                  ; 0003 004B // Pin2 Pin Change interrupt 1: Off
@@ -1696,13 +1753,13 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 004F // Pin6 Pin Change interrupt 1: Off
                  ; 0003 0050 // Pin7 Pin Change interrupt 1: Off
                  ; 0003 0051 PORTA.INT1MASK=0x00;
-00015f 93e0 060b 	STS  1547,R30
+00018f 93e0 060b 	STS  1547,R30
                  ; 0003 0052 
                  ; 0003 0053 // PORTB initialization
                  ; 0003 0054 // OUT register
                  ; 0003 0055 PORTB.OUT=0xF0;
-000161 efe0      	LDI  R30,LOW(240)
-000162 93e0 0624 	STS  1572,R30
+000191 efe0      	LDI  R30,LOW(240)
+000192 93e0 0624 	STS  1572,R30
                  ; 0003 0056 // Pin0: Input
                  ; 0003 0057 // Pin1: Input
                  ; 0003 0058 // Pin2: Input
@@ -1712,55 +1769,55 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 005C // Pin6: Output
                  ; 0003 005D // Pin7: Output
                  ; 0003 005E PORTB.DIR=0xF0;
-000164 93e0 0620 	STS  1568,R30
+000194 93e0 0620 	STS  1568,R30
                  ; 0003 005F // Pin0 Output/Pull configuration: Totempole/No
                  ; 0003 0060 // Pin0 Input/Sense configuration: Sense both edges
                  ; 0003 0061 // Pin0 Inverted: Off
                  ; 0003 0062 PORTB.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000166 e0e0      	LDI  R30,LOW(0)
-000167 93e0 0630 	STS  1584,R30
+000196 e0e0      	LDI  R30,LOW(0)
+000197 93e0 0630 	STS  1584,R30
                  ; 0003 0063 // Pin1 Output/Pull configuration: Totempole/No
                  ; 0003 0064 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 0065 // Pin1 Inverted: Off
                  ; 0003 0066 PORTB.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000169 93e0 0631 	STS  1585,R30
+000199 93e0 0631 	STS  1585,R30
                  ; 0003 0067 // Pin2 Output/Pull configuration: Totempole/No
                  ; 0003 0068 // Pin2 Input/Sense configuration: Sense both edges
                  ; 0003 0069 // Pin2 Inverted: Off
                  ; 0003 006A PORTB.PIN2CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00016b 93e0 0632 	STS  1586,R30
+00019b 93e0 0632 	STS  1586,R30
                  ; 0003 006B // Pin3 Output/Pull configuration: Totempole/No
                  ; 0003 006C // Pin3 Input/Sense configuration: Sense both edges
                  ; 0003 006D // Pin3 Inverted: Off
                  ; 0003 006E PORTB.PIN3CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00016d 93e0 0633 	STS  1587,R30
+00019d 93e0 0633 	STS  1587,R30
                  ; 0003 006F // Pin4 Output/Pull configuration: Totempole/No
                  ; 0003 0070 // Pin4 Input/Sense configuration: Sense both edges
                  ; 0003 0071 // Pin4 Inverted: Off
                  ; 0003 0072 PORTB.PIN4CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00016f 93e0 0634 	STS  1588,R30
+00019f 93e0 0634 	STS  1588,R30
                  ; 0003 0073 // Pin5 Output/Pull configuration: Totempole/No
                  ; 0003 0074 // Pin5 Input/Sense configuration: Sense both edges
                  ; 0003 0075 // Pin5 Inverted: Off
                  ; 0003 0076 PORTB.PIN5CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000171 93e0 0635 	STS  1589,R30
+0001a1 93e0 0635 	STS  1589,R30
                  ; 0003 0077 // Pin6 Output/Pull configuration: Totempole/No
                  ; 0003 0078 // Pin6 Input/Sense configuration: Sense both edges
                  ; 0003 0079 // Pin6 Inverted: Off
                  ; 0003 007A PORTB.PIN6CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000173 93e0 0636 	STS  1590,R30
+0001a3 93e0 0636 	STS  1590,R30
                  ; 0003 007B // Pin7 Output/Pull configuration: Totempole/No
                  ; 0003 007C // Pin7 Input/Sense configuration: Sense both edges
                  ; 0003 007D // Pin7 Inverted: Off
                  ; 0003 007E PORTB.PIN7CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000175 93e0 0637 	STS  1591,R30
+0001a5 93e0 0637 	STS  1591,R30
                  ; 0003 007F // Interrupt 0 level: Disabled
                  ; 0003 0080 // Interrupt 1 level: Disabled
                  ; 0003 0081 PORTB.INTCTRL=(PORTB.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 0082 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-000177 91e0 0629 	LDS  R30,1577
-000179 7fe0      	ANDI R30,LOW(0xF0)
-00017a 93e0 0629 	STS  1577,R30
+0001a7 91e0 0629 	LDS  R30,1577
+0001a9 7fe0      	ANDI R30,LOW(0xF0)
+0001aa 93e0 0629 	STS  1577,R30
                  ; 0003 0083 // Pin0 Pin Change interrupt 0: Off
                  ; 0003 0084 // Pin1 Pin Change interrupt 0: Off
                  ; 0003 0085 // Pin2 Pin Change interrupt 0: Off
@@ -1770,8 +1827,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0089 // Pin6 Pin Change interrupt 0: Off
                  ; 0003 008A // Pin7 Pin Change interrupt 0: Off
                  ; 0003 008B PORTB.INT0MASK=0x00;
-00017c e0e0      	LDI  R30,LOW(0)
-00017d 93e0 062a 	STS  1578,R30
+0001ac e0e0      	LDI  R30,LOW(0)
+0001ad 93e0 062a 	STS  1578,R30
                  ; 0003 008C // Pin0 Pin Change interrupt 1: Off
                  ; 0003 008D // Pin1 Pin Change interrupt 1: Off
                  ; 0003 008E // Pin2 Pin Change interrupt 1: Off
@@ -1781,12 +1838,12 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0092 // Pin6 Pin Change interrupt 1: Off
                  ; 0003 0093 // Pin7 Pin Change interrupt 1: Off
                  ; 0003 0094 PORTB.INT1MASK=0x00;
-00017f 93e0 062b 	STS  1579,R30
+0001af 93e0 062b 	STS  1579,R30
                  ; 0003 0095 
                  ; 0003 0096 // PORTC initialization
                  ; 0003 0097 // OUT register
                  ; 0003 0098 PORTC.OUT=0x00;
-000181 93e0 0644 	STS  1604,R30
+0001b1 93e0 0644 	STS  1604,R30
                  ; 0003 0099 // Pin0: Input
                  ; 0003 009A // Pin1: Input
                  ; 0003 009B // Pin2: Input
@@ -1796,47 +1853,47 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 009F // Pin6: Input
                  ; 0003 00A0 // Pin7: Input
                  ; 0003 00A1 PORTC.DIR=0x00;
-000183 93e0 0640 	STS  1600,R30
+0001b3 93e0 0640 	STS  1600,R30
                  ; 0003 00A2 // Pin0 Output/Pull configuration: Totempole/No
                  ; 0003 00A3 // Pin0 Input/Sense configuration: Sense both edges
                  ; 0003 00A4 // Pin0 Inverted: Off
                  ; 0003 00A5 PORTC.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000185 93e0 0650 	STS  1616,R30
+0001b5 93e0 0650 	STS  1616,R30
                  ; 0003 00A6 // Pin1 Output/Pull configuration: Totempole/No
                  ; 0003 00A7 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 00A8 // Pin1 Inverted: Off
                  ; 0003 00A9 PORTC.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000187 93e0 0651 	STS  1617,R30
+0001b7 93e0 0651 	STS  1617,R30
                  ; 0003 00AA // Pin2 Output/Pull configuration: Totempole/No
                  ; 0003 00AB // Pin2 Input/Sense configuration: Sense both edges
                  ; 0003 00AC // Pin2 Inverted: Off
                  ; 0003 00AD PORTC.PIN2CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000189 93e0 0652 	STS  1618,R30
+0001b9 93e0 0652 	STS  1618,R30
                  ; 0003 00AE // Pin3 Output/Pull configuration: Totempole/No
                  ; 0003 00AF // Pin3 Input/Sense configuration: Sense both edges
                  ; 0003 00B0 // Pin3 Inverted: Off
                  ; 0003 00B1 PORTC.PIN3CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00018b 93e0 0653 	STS  1619,R30
+0001bb 93e0 0653 	STS  1619,R30
                  ; 0003 00B2 // Pin4 Output/Pull configuration: Totempole/No
                  ; 0003 00B3 // Pin4 Input/Sense configuration: Sense both edges
                  ; 0003 00B4 // Pin4 Inverted: Off
                  ; 0003 00B5 PORTC.PIN4CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00018d 93e0 0654 	STS  1620,R30
+0001bd 93e0 0654 	STS  1620,R30
                  ; 0003 00B6 // Pin5 Output/Pull configuration: Totempole/No
                  ; 0003 00B7 // Pin5 Input/Sense configuration: Sense both edges
                  ; 0003 00B8 // Pin5 Inverted: Off
                  ; 0003 00B9 PORTC.PIN5CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00018f 93e0 0655 	STS  1621,R30
+0001bf 93e0 0655 	STS  1621,R30
                  ; 0003 00BA // Pin6 Output/Pull configuration: Totempole/No
                  ; 0003 00BB // Pin6 Input/Sense configuration: Sense both edges
                  ; 0003 00BC // Pin6 Inverted: Off
                  ; 0003 00BD PORTC.PIN6CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000191 93e0 0656 	STS  1622,R30
+0001c1 93e0 0656 	STS  1622,R30
                  ; 0003 00BE // Pin7 Output/Pull configuration: Totempole/No
                  ; 0003 00BF // Pin7 Input/Sense configuration: Sense both edges
                  ; 0003 00C0 // Pin7 Inverted: Off
                  ; 0003 00C1 PORTC.PIN7CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000193 93e0 0657 	STS  1623,R30
+0001c3 93e0 0657 	STS  1623,R30
                  ; 0003 00C2 // PORTC Peripheral Output Remapping
                  ; 0003 00C3 // OC0A Output: Pin 0
                  ; 0003 00C4 // OC0B Output: Pin 1
@@ -1848,14 +1905,14 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 00CA // SPI MOSI: Pin 5
                  ; 0003 00CB // SPI SCK: Pin 7
                  ; 0003 00CC PORTC.REMAP=(0<<PORT_SPI_bp) | (0<<PORT_USART0_bp) | (0<<PORT_TC0D_bp) | (0<<PORT_TC0C_bp) | (0<<PORT_TC0B_bp) | (0<<POR ...
-000195 93e0 064e 	STS  1614,R30
+0001c5 93e0 064e 	STS  1614,R30
                  ; 0003 00CD // Interrupt 0 level: Disabled
                  ; 0003 00CE // Interrupt 1 level: Disabled
                  ; 0003 00CF PORTC.INTCTRL=(PORTC.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 00D0 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-000197 91e0 0649 	LDS  R30,1609
-000199 7fe0      	ANDI R30,LOW(0xF0)
-00019a 93e0 0649 	STS  1609,R30
+0001c7 91e0 0649 	LDS  R30,1609
+0001c9 7fe0      	ANDI R30,LOW(0xF0)
+0001ca 93e0 0649 	STS  1609,R30
                  ; 0003 00D1 // Pin0 Pin Change interrupt 0: Off
                  ; 0003 00D2 // Pin1 Pin Change interrupt 0: Off
                  ; 0003 00D3 // Pin2 Pin Change interrupt 0: Off
@@ -1865,8 +1922,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 00D7 // Pin6 Pin Change interrupt 0: Off
                  ; 0003 00D8 // Pin7 Pin Change interrupt 0: Off
                  ; 0003 00D9 PORTC.INT0MASK=0x00;
-00019c e0e0      	LDI  R30,LOW(0)
-00019d 93e0 064a 	STS  1610,R30
+0001cc e0e0      	LDI  R30,LOW(0)
+0001cd 93e0 064a 	STS  1610,R30
                  ; 0003 00DA // Pin0 Pin Change interrupt 1: Off
                  ; 0003 00DB // Pin1 Pin Change interrupt 1: Off
                  ; 0003 00DC // Pin2 Pin Change interrupt 1: Off
@@ -1876,55 +1933,55 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 00E0 // Pin6 Pin Change interrupt 1: Off
                  ; 0003 00E1 // Pin7 Pin Change interrupt 1: Off
                  ; 0003 00E2 PORTC.INT1MASK=0x00;
-00019f 93e0 064b 	STS  1611,R30
+0001cf 93e0 064b 	STS  1611,R30
                  ; 0003 00E3 
                  ; 0003 00E4 // PORTD initialization
                  ; 0003 00E5 // OUT register
                  ; 0003 00E6 PORTD.OUT=0x00;
-0001a1 93e0 0664 	STS  1636,R30
+0001d1 93e0 0664 	STS  1636,R30
                  ; 0003 00E7 // Pin0: Input
                  ; 0003 00E8 // Pin1: Input
                  ; 0003 00E9 // Pin2: Input
                  ; 0003 00EA PORTD.DIR=0x00;
-0001a3 93e0 0660 	STS  1632,R30
+0001d3 93e0 0660 	STS  1632,R30
                  ; 0003 00EB // Pin0 Output/Pull configuration: Totempole/No
                  ; 0003 00EC // Pin0 Input/Sense configuration: Sense both edges
                  ; 0003 00ED // Pin0 Inverted: Off
                  ; 0003 00EE PORTD.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001a5 93e0 0670 	STS  1648,R30
+0001d5 93e0 0670 	STS  1648,R30
                  ; 0003 00EF // Pin1 Output/Pull configuration: Totempole/No
                  ; 0003 00F0 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 00F1 // Pin1 Inverted: Off
                  ; 0003 00F2 PORTD.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001a7 93e0 0671 	STS  1649,R30
+0001d7 93e0 0671 	STS  1649,R30
                  ; 0003 00F3 // Pin2 Output/Pull configuration: Totempole/No
                  ; 0003 00F4 // Pin2 Input/Sense configuration: Sense both edges
                  ; 0003 00F5 // Pin2 Inverted: Off
                  ; 0003 00F6 PORTD.PIN2CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001a9 93e0 0672 	STS  1650,R30
+0001d9 93e0 0672 	STS  1650,R30
                  ; 0003 00F7 // Interrupt 0 level: Disabled
                  ; 0003 00F8 // Interrupt 1 level: Disabled
                  ; 0003 00F9 PORTD.INTCTRL=(PORTD.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 00FA 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-0001ab 91e0 0669 	LDS  R30,1641
-0001ad 7fe0      	ANDI R30,LOW(0xF0)
-0001ae 93e0 0669 	STS  1641,R30
+0001db 91e0 0669 	LDS  R30,1641
+0001dd 7fe0      	ANDI R30,LOW(0xF0)
+0001de 93e0 0669 	STS  1641,R30
                  ; 0003 00FB // Pin0 Pin Change interrupt 0: Off
                  ; 0003 00FC // Pin1 Pin Change interrupt 0: Off
                  ; 0003 00FD // Pin2 Pin Change interrupt 0: Off
                  ; 0003 00FE PORTD.INT0MASK=0x00;
-0001b0 e0e0      	LDI  R30,LOW(0)
-0001b1 93e0 066a 	STS  1642,R30
+0001e0 e0e0      	LDI  R30,LOW(0)
+0001e1 93e0 066a 	STS  1642,R30
                  ; 0003 00FF // Pin0 Pin Change interrupt 1: Off
                  ; 0003 0100 // Pin1 Pin Change interrupt 1: Off
                  ; 0003 0101 // Pin2 Pin Change interrupt 1: Off
                  ; 0003 0102 PORTD.INT1MASK=0x00;
-0001b3 93e0 066b 	STS  1643,R30
+0001e3 93e0 066b 	STS  1643,R30
                  ; 0003 0103 
                  ; 0003 0104 // PORTE initialization
                  ; 0003 0105 // OUT register
                  ; 0003 0106 PORTE.OUT=0x00;
-0001b5 93e0 0684 	STS  1668,R30
+0001e5 93e0 0684 	STS  1668,R30
                  ; 0003 0107 // Pin0: Input
                  ; 0003 0108 // Pin1: Input
                  ; 0003 0109 // Pin2: Input
@@ -1934,50 +1991,50 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 010D // Pin6: Input
                  ; 0003 010E // Pin7: Input
                  ; 0003 010F PORTE.DIR=0x20;
-0001b7 e2e0      	LDI  R30,LOW(32)
-0001b8 93e0 0680 	STS  1664,R30
+0001e7 e2e0      	LDI  R30,LOW(32)
+0001e8 93e0 0680 	STS  1664,R30
                  ; 0003 0110 // Pin0 Output/Pull configuration: Totempole/Pull-up (on input)
                  ; 0003 0111 // Pin0 Input/Sense configuration: Sense both edges
                  ; 0003 0112 // Pin0 Inverted: Off
                  ; 0003 0113 PORTE.PIN0CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
-0001ba e1e8      	LDI  R30,LOW(24)
-0001bb 93e0 0690 	STS  1680,R30
+0001ea e1e8      	LDI  R30,LOW(24)
+0001eb 93e0 0690 	STS  1680,R30
                  ; 0003 0114 // Pin1 Output/Pull configuration: Totempole/Pull-up (on input)
                  ; 0003 0115 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 0116 // Pin1 Inverted: Off
                  ; 0003 0117 PORTE.PIN1CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
-0001bd 93e0 0691 	STS  1681,R30
+0001ed 93e0 0691 	STS  1681,R30
                  ; 0003 0118 // Pin2 Output/Pull configuration: Totempole/Pull-up (on input)
                  ; 0003 0119 // Pin2 Input/Sense configuration: Sense both edges
                  ; 0003 011A // Pin2 Inverted: Off
                  ; 0003 011B PORTE.PIN2CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
-0001bf 93e0 0692 	STS  1682,R30
+0001ef 93e0 0692 	STS  1682,R30
                  ; 0003 011C // Pin3 Output/Pull configuration: Totempole/Pull-up (on input)
                  ; 0003 011D // Pin3 Input/Sense configuration: Sense both edges
                  ; 0003 011E // Pin3 Inverted: Off
                  ; 0003 011F PORTE.PIN3CTRL=PORT_OPC_PULLUP_gc | PORT_ISC_BOTHEDGES_gc;
-0001c1 93e0 0693 	STS  1683,R30
+0001f1 93e0 0693 	STS  1683,R30
                  ; 0003 0120 // Pin4 Output/Pull configuration: Totempole/No
                  ; 0003 0121 // Pin4 Input/Sense configuration: Sense both edges
                  ; 0003 0122 // Pin4 Inverted: Off
                  ; 0003 0123 PORTE.PIN4CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001c3 e0e0      	LDI  R30,LOW(0)
-0001c4 93e0 0694 	STS  1684,R30
+0001f3 e0e0      	LDI  R30,LOW(0)
+0001f4 93e0 0694 	STS  1684,R30
                  ; 0003 0124 // Pin5 Output/Pull configuration: Totempole/No
                  ; 0003 0125 // Pin5 Input/Sense configuration: Sense both edges
                  ; 0003 0126 // Pin5 Inverted: Off
                  ; 0003 0127 PORTE.PIN5CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001c6 93e0 0695 	STS  1685,R30
+0001f6 93e0 0695 	STS  1685,R30
                  ; 0003 0128 // Pin6 Output/Pull configuration: Totempole/No
                  ; 0003 0129 // Pin6 Input/Sense configuration: Sense both edges
                  ; 0003 012A // Pin6 Inverted: Off
                  ; 0003 012B PORTE.PIN6CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001c8 93e0 0696 	STS  1686,R30
+0001f8 93e0 0696 	STS  1686,R30
                  ; 0003 012C // Pin7 Output/Pull configuration: Totempole/No
                  ; 0003 012D // Pin7 Input/Sense configuration: Sense both edges
                  ; 0003 012E // Pin7 Inverted: Off
                  ; 0003 012F PORTE.PIN7CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001ca 93e0 0697 	STS  1687,R30
+0001fa 93e0 0697 	STS  1687,R30
                  ; 0003 0130 // PORTE Peripheral Output Remapping
                  ; 0003 0131 // OC0A Output: Pin 0
                  ; 0003 0132 // OC0B Output: Pin 1
@@ -1989,14 +2046,14 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0138 // SPI MOSI: Pin -1
                  ; 0003 0139 // SPI SCK: Pin -1
                  ; 0003 013A PORTE.REMAP=(0<<PORT_SPI_bp) | (0<<PORT_USART0_bp) | (0<<PORT_TC0D_bp) | (0<<PORT_TC0C_bp) | (0<<PORT_TC0B_bp) | (0<<POR ...
-0001cc 93e0 068e 	STS  1678,R30
+0001fc 93e0 068e 	STS  1678,R30
                  ; 0003 013B // Interrupt 0 level: Disabled
                  ; 0003 013C // Interrupt 1 level: Disabled
                  ; 0003 013D PORTE.INTCTRL=(PORTE.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 013E 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-0001ce 91e0 0689 	LDS  R30,1673
-0001d0 7fe0      	ANDI R30,LOW(0xF0)
-0001d1 93e0 0689 	STS  1673,R30
+0001fe 91e0 0689 	LDS  R30,1673
+000200 7fe0      	ANDI R30,LOW(0xF0)
+000201 93e0 0689 	STS  1673,R30
                  ; 0003 013F // Pin0 Pin Change interrupt 0: Off
                  ; 0003 0140 // Pin1 Pin Change interrupt 0: Off
                  ; 0003 0141 // Pin2 Pin Change interrupt 0: Off
@@ -2006,8 +2063,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0145 // Pin6 Pin Change interrupt 0: Off
                  ; 0003 0146 // Pin7 Pin Change interrupt 0: Off
                  ; 0003 0147 PORTE.INT0MASK=0x00;
-0001d3 e0e0      	LDI  R30,LOW(0)
-0001d4 93e0 068a 	STS  1674,R30
+000203 e0e0      	LDI  R30,LOW(0)
+000204 93e0 068a 	STS  1674,R30
                  ; 0003 0148 // Pin0 Pin Change interrupt 1: Off
                  ; 0003 0149 // Pin1 Pin Change interrupt 1: Off
                  ; 0003 014A // Pin2 Pin Change interrupt 1: Off
@@ -2017,12 +2074,12 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 014E // Pin6 Pin Change interrupt 1: Off
                  ; 0003 014F // Pin7 Pin Change interrupt 1: Off
                  ; 0003 0150 PORTE.INT1MASK=0x00;
-0001d6 93e0 068b 	STS  1675,R30
+000206 93e0 068b 	STS  1675,R30
                  ; 0003 0151 
                  ; 0003 0152 // PORTG initialization
                  ; 0003 0153 // OUT register
                  ; 0003 0154 PORTG.OUT=0x00;
-0001d8 93e0 06c4 	STS  1732,R30
+000208 93e0 06c4 	STS  1732,R30
                  ; 0003 0155 // Pin0: Input
                  ; 0003 0156 // Pin1: Input
                  ; 0003 0157 // Pin2: Input
@@ -2032,54 +2089,54 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 015B // Pin6: Input
                  ; 0003 015C // Pin7: Input
                  ; 0003 015D PORTG.DIR=0x00;
-0001da 93e0 06c0 	STS  1728,R30
+00020a 93e0 06c0 	STS  1728,R30
                  ; 0003 015E // Pin0 Output/Pull configuration: Totempole/No
                  ; 0003 015F // Pin0 Input/Sense configuration: Sense both edges
                  ; 0003 0160 // Pin0 Inverted: Off
                  ; 0003 0161 PORTG.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001dc 93e0 06d0 	STS  1744,R30
+00020c 93e0 06d0 	STS  1744,R30
                  ; 0003 0162 // Pin1 Output/Pull configuration: Totempole/No
                  ; 0003 0163 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 0164 // Pin1 Inverted: Off
                  ; 0003 0165 PORTG.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001de 93e0 06d1 	STS  1745,R30
+00020e 93e0 06d1 	STS  1745,R30
                  ; 0003 0166 // Pin2 Output/Pull configuration: Totempole/No
                  ; 0003 0167 // Pin2 Input/Sense configuration: Sense both edges
                  ; 0003 0168 // Pin2 Inverted: Off
                  ; 0003 0169 PORTG.PIN2CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001e0 93e0 06d2 	STS  1746,R30
+000210 93e0 06d2 	STS  1746,R30
                  ; 0003 016A // Pin3 Output/Pull configuration: Totempole/No
                  ; 0003 016B // Pin3 Input/Sense configuration: Sense both edges
                  ; 0003 016C // Pin3 Inverted: Off
                  ; 0003 016D PORTG.PIN3CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001e2 93e0 06d3 	STS  1747,R30
+000212 93e0 06d3 	STS  1747,R30
                  ; 0003 016E // Pin4 Output/Pull configuration: Totempole/No
                  ; 0003 016F // Pin4 Input/Sense configuration: Sense both edges
                  ; 0003 0170 // Pin4 Inverted: Off
                  ; 0003 0171 PORTG.PIN4CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001e4 93e0 06d4 	STS  1748,R30
+000214 93e0 06d4 	STS  1748,R30
                  ; 0003 0172 // Pin5 Output/Pull configuration: Totempole/No
                  ; 0003 0173 // Pin5 Input/Sense configuration: Sense both edges
                  ; 0003 0174 // Pin5 Inverted: Off
                  ; 0003 0175 PORTG.PIN5CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001e6 93e0 06d5 	STS  1749,R30
+000216 93e0 06d5 	STS  1749,R30
                  ; 0003 0176 // Pin6 Output/Pull configuration: Totempole/No
                  ; 0003 0177 // Pin6 Input/Sense configuration: Sense both edges
                  ; 0003 0178 // Pin6 Inverted: Off
                  ; 0003 0179 PORTG.PIN6CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001e8 93e0 06d6 	STS  1750,R30
+000218 93e0 06d6 	STS  1750,R30
                  ; 0003 017A // Pin7 Output/Pull configuration: Totempole/No
                  ; 0003 017B // Pin7 Input/Sense configuration: Sense both edges
                  ; 0003 017C // Pin7 Inverted: Off
                  ; 0003 017D PORTG.PIN7CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001ea 93e0 06d7 	STS  1751,R30
+00021a 93e0 06d7 	STS  1751,R30
                  ; 0003 017E // Interrupt 0 level: Disabled
                  ; 0003 017F // Interrupt 1 level: Disabled
                  ; 0003 0180 PORTG.INTCTRL=(PORTG.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 0181 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-0001ec 91e0 06c9 	LDS  R30,1737
-0001ee 7fe0      	ANDI R30,LOW(0xF0)
-0001ef 93e0 06c9 	STS  1737,R30
+00021c 91e0 06c9 	LDS  R30,1737
+00021e 7fe0      	ANDI R30,LOW(0xF0)
+00021f 93e0 06c9 	STS  1737,R30
                  ; 0003 0182 // Pin0 Pin Change interrupt 0: Off
                  ; 0003 0183 // Pin1 Pin Change interrupt 0: Off
                  ; 0003 0184 // Pin2 Pin Change interrupt 0: Off
@@ -2089,8 +2146,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0188 // Pin6 Pin Change interrupt 0: Off
                  ; 0003 0189 // Pin7 Pin Change interrupt 0: Off
                  ; 0003 018A PORTG.INT0MASK=0x00;
-0001f1 e0e0      	LDI  R30,LOW(0)
-0001f2 93e0 06ca 	STS  1738,R30
+000221 e0e0      	LDI  R30,LOW(0)
+000222 93e0 06ca 	STS  1738,R30
                  ; 0003 018B // Pin0 Pin Change interrupt 1: Off
                  ; 0003 018C // Pin1 Pin Change interrupt 1: Off
                  ; 0003 018D // Pin2 Pin Change interrupt 1: Off
@@ -2100,12 +2157,12 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 0191 // Pin6 Pin Change interrupt 1: Off
                  ; 0003 0192 // Pin7 Pin Change interrupt 1: Off
                  ; 0003 0193 PORTG.INT1MASK=0x00;
-0001f4 93e0 06cb 	STS  1739,R30
+000224 93e0 06cb 	STS  1739,R30
                  ; 0003 0194 
                  ; 0003 0195 // PORTM initialization
                  ; 0003 0196 // OUT register
                  ; 0003 0197 PORTM.OUT=0x00;
-0001f6 93e0 0764 	STS  1892,R30
+000226 93e0 0764 	STS  1892,R30
                  ; 0003 0198 // Pin0: Input
                  ; 0003 0199 // Pin1: Input
                  ; 0003 019A // Pin2: Input
@@ -2115,54 +2172,54 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 019E // Pin6: Input
                  ; 0003 019F // Pin7: Input
                  ; 0003 01A0 PORTM.DIR=0x00;
-0001f8 93e0 0760 	STS  1888,R30
+000228 93e0 0760 	STS  1888,R30
                  ; 0003 01A1 // Pin0 Output/Pull configuration: Totempole/No
                  ; 0003 01A2 // Pin0 Input/Sense configuration: Sense both edges
                  ; 0003 01A3 // Pin0 Inverted: Off
                  ; 0003 01A4 PORTM.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001fa 93e0 0770 	STS  1904,R30
+00022a 93e0 0770 	STS  1904,R30
                  ; 0003 01A5 // Pin1 Output/Pull configuration: Totempole/No
                  ; 0003 01A6 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 01A7 // Pin1 Inverted: Off
                  ; 0003 01A8 PORTM.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001fc 93e0 0771 	STS  1905,R30
+00022c 93e0 0771 	STS  1905,R30
                  ; 0003 01A9 // Pin2 Output/Pull configuration: Totempole/No
                  ; 0003 01AA // Pin2 Input/Sense configuration: Sense both edges
                  ; 0003 01AB // Pin2 Inverted: Off
                  ; 0003 01AC PORTM.PIN2CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-0001fe 93e0 0772 	STS  1906,R30
+00022e 93e0 0772 	STS  1906,R30
                  ; 0003 01AD // Pin3 Output/Pull configuration: Totempole/No
                  ; 0003 01AE // Pin3 Input/Sense configuration: Sense both edges
                  ; 0003 01AF // Pin3 Inverted: Off
                  ; 0003 01B0 PORTM.PIN3CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000200 93e0 0773 	STS  1907,R30
+000230 93e0 0773 	STS  1907,R30
                  ; 0003 01B1 // Pin4 Output/Pull configuration: Totempole/No
                  ; 0003 01B2 // Pin4 Input/Sense configuration: Sense both edges
                  ; 0003 01B3 // Pin4 Inverted: Off
                  ; 0003 01B4 PORTM.PIN4CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000202 93e0 0774 	STS  1908,R30
+000232 93e0 0774 	STS  1908,R30
                  ; 0003 01B5 // Pin5 Output/Pull configuration: Totempole/No
                  ; 0003 01B6 // Pin5 Input/Sense configuration: Sense both edges
                  ; 0003 01B7 // Pin5 Inverted: Off
                  ; 0003 01B8 PORTM.PIN5CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000204 93e0 0775 	STS  1909,R30
+000234 93e0 0775 	STS  1909,R30
                  ; 0003 01B9 // Pin6 Output/Pull configuration: Totempole/No
                  ; 0003 01BA // Pin6 Input/Sense configuration: Sense both edges
                  ; 0003 01BB // Pin6 Inverted: Off
                  ; 0003 01BC PORTM.PIN6CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000206 93e0 0776 	STS  1910,R30
+000236 93e0 0776 	STS  1910,R30
                  ; 0003 01BD // Pin7 Output/Pull configuration: Totempole/No
                  ; 0003 01BE // Pin7 Input/Sense configuration: Sense both edges
                  ; 0003 01BF // Pin7 Inverted: Off
                  ; 0003 01C0 PORTM.PIN7CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000208 93e0 0777 	STS  1911,R30
+000238 93e0 0777 	STS  1911,R30
                  ; 0003 01C1 // Interrupt 0 level: Disabled
                  ; 0003 01C2 // Interrupt 1 level: Disabled
                  ; 0003 01C3 PORTM.INTCTRL=(PORTM.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 01C4 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-00020a 91e0 0769 	LDS  R30,1897
-00020c 7fe0      	ANDI R30,LOW(0xF0)
-00020d 93e0 0769 	STS  1897,R30
+00023a 91e0 0769 	LDS  R30,1897
+00023c 7fe0      	ANDI R30,LOW(0xF0)
+00023d 93e0 0769 	STS  1897,R30
                  ; 0003 01C5 // Pin0 Pin Change interrupt 0: Off
                  ; 0003 01C6 // Pin1 Pin Change interrupt 0: Off
                  ; 0003 01C7 // Pin2 Pin Change interrupt 0: Off
@@ -2172,8 +2229,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 01CB // Pin6 Pin Change interrupt 0: Off
                  ; 0003 01CC // Pin7 Pin Change interrupt 0: Off
                  ; 0003 01CD PORTM.INT0MASK=0x00;
-00020f e0e0      	LDI  R30,LOW(0)
-000210 93e0 076a 	STS  1898,R30
+00023f e0e0      	LDI  R30,LOW(0)
+000240 93e0 076a 	STS  1898,R30
                  ; 0003 01CE // Pin0 Pin Change interrupt 1: Off
                  ; 0003 01CF // Pin1 Pin Change interrupt 1: Off
                  ; 0003 01D0 // Pin2 Pin Change interrupt 1: Off
@@ -2183,44 +2240,44 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 01D4 // Pin6 Pin Change interrupt 1: Off
                  ; 0003 01D5 // Pin7 Pin Change interrupt 1: Off
                  ; 0003 01D6 PORTM.INT1MASK=0x00;
-000212 93e0 076b 	STS  1899,R30
+000242 93e0 076b 	STS  1899,R30
                  ; 0003 01D7 
                  ; 0003 01D8 // PORTR initialization
                  ; 0003 01D9 // OUT register
                  ; 0003 01DA PORTR.OUT=0x00;
-000214 93e0 07e4 	STS  2020,R30
+000244 93e0 07e4 	STS  2020,R30
                  ; 0003 01DB // Pin0: Input
                  ; 0003 01DC // Pin1: Input
                  ; 0003 01DD PORTR.DIR=0x00;
-000216 93e0 07e0 	STS  2016,R30
+000246 93e0 07e0 	STS  2016,R30
                  ; 0003 01DE // Pin0 Output/Pull configuration: Totempole/No
                  ; 0003 01DF // Pin0 Input/Sense configuration: Sense both edges
                  ; 0003 01E0 // Pin0 Inverted: Off
                  ; 0003 01E1 PORTR.PIN0CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-000218 93e0 07f0 	STS  2032,R30
+000248 93e0 07f0 	STS  2032,R30
                  ; 0003 01E2 // Pin1 Output/Pull configuration: Totempole/No
                  ; 0003 01E3 // Pin1 Input/Sense configuration: Sense both edges
                  ; 0003 01E4 // Pin1 Inverted: Off
                  ; 0003 01E5 PORTR.PIN1CTRL=PORT_OPC_TOTEM_gc | PORT_ISC_BOTHEDGES_gc;
-00021a 93e0 07f1 	STS  2033,R30
+00024a 93e0 07f1 	STS  2033,R30
                  ; 0003 01E6 // Interrupt 0 level: Disabled
                  ; 0003 01E7 // Interrupt 1 level: Disabled
                  ; 0003 01E8 PORTR.INTCTRL=(PORTR.INTCTRL & (~(PORT_INT1LVL_gm | PORT_INT0LVL_gm))) |
                  ; 0003 01E9 	PORT_INT1LVL_OFF_gc | PORT_INT0LVL_OFF_gc;
-00021c 91e0 07e9 	LDS  R30,2025
-00021e 7fe0      	ANDI R30,LOW(0xF0)
-00021f 93e0 07e9 	STS  2025,R30
+00024c 91e0 07e9 	LDS  R30,2025
+00024e 7fe0      	ANDI R30,LOW(0xF0)
+00024f 93e0 07e9 	STS  2025,R30
                  ; 0003 01EA // Pin0 Pin Change interrupt 0: Off
                  ; 0003 01EB // Pin1 Pin Change interrupt 0: Off
                  ; 0003 01EC PORTR.INT0MASK=0x00;
-000221 e0e0      	LDI  R30,LOW(0)
-000222 93e0 07ea 	STS  2026,R30
+000251 e0e0      	LDI  R30,LOW(0)
+000252 93e0 07ea 	STS  2026,R30
                  ; 0003 01ED // Pin0 Pin Change interrupt 1: Off
                  ; 0003 01EE // Pin1 Pin Change interrupt 1: Off
                  ; 0003 01EF PORTR.INT1MASK=0x00;
-000224 93e0 07eb 	STS  2027,R30
+000254 93e0 07eb 	STS  2027,R30
                  ; 0003 01F0 }
-000226 9508      	RET
+000256 9508      	RET
                  ; .FEND
                  ;
                  ;// Virtual Ports initialization
@@ -2231,15 +2288,15 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0003 01F5 // PORTA mapped to VPORT0
                  ; 0003 01F6 // PORTB mapped to VPORT1
                  ; 0003 01F7 PORTCFG.VPCTRLA=PORTCFG_VP13MAP_PORTB_gc | PORTCFG_VP02MAP_PORTA_gc;
-000227 e1e0      	LDI  R30,LOW(16)
-000228 93e0 00b2 	STS  178,R30
+000257 e1e0      	LDI  R30,LOW(16)
+000258 93e0 00b2 	STS  178,R30
                  ; 0003 01F8 // PORTC mapped to VPORT2
                  ; 0003 01F9 // PORTD mapped to VPORT3
                  ; 0003 01FA PORTCFG.VPCTRLB=PORTCFG_VP13MAP_PORTD_gc | PORTCFG_VP02MAP_PORTC_gc;
-00022a e3e2      	LDI  R30,LOW(50)
-00022b 93e0 00b3 	STS  179,R30
+00025a e3e2      	LDI  R30,LOW(50)
+00025b 93e0 00b3 	STS  179,R30
                  ; 0003 01FB }
-00022d 9508      	RET
+00025d 9508      	RET
                  ; .FEND
                  ;
                  ;/*******************************************************
@@ -2263,12 +2320,12 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; .FSTART _tc0_disable
                  ; 0004 0010 // Timer/Counter off
                  ; 0004 0011 ptc->CTRLA=TC_CLKSEL_OFF_gc;
-00022e d0d9      	RCALL SUBOPT_0x0
+00025e d0f7      	RCALL SUBOPT_0x0
                  ;	*ptc -> R16,R17
                  ; 0004 0012 // Issue a reset command
                  ; 0004 0013 ptc->CTRLFSET=TC_CMD_RESET_gc;
                  ; 0004 0014 }
-00022f c05e      	RJMP _0x2060001
+00025f c05e      	RJMP _0x2060001
                  ; .FEND
                  ;
                  ;// Disable a Timer/Counter type TC1
@@ -2278,12 +2335,12 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; .FSTART _tc1_disable
                  ; 0004 0019 // Timer/Counter off
                  ; 0004 001A ptc->CTRLA=TC_CLKSEL_OFF_gc;
-000230 d0d7      	RCALL SUBOPT_0x0
+000260 d0f5      	RCALL SUBOPT_0x0
                  ;	*ptc -> R16,R17
                  ; 0004 001B // Issue a reset command
                  ; 0004 001C ptc->CTRLFSET=TC_CMD_RESET_gc;
                  ; 0004 001D }
-000231 c05c      	RJMP _0x2060001
+000261 c05c      	RJMP _0x2060001
                  ; .FEND
                  ;
                  ;// Timer/Counter TCC0 initialization
@@ -2299,24 +2356,24 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 0027 
                  ; 0004 0028 // Save interrupts enabled/disabled state
                  ; 0004 0029 s=SREG;
-000232 931a      	ST   -Y,R17
-000233 930a      	ST   -Y,R16
+000262 931a      	ST   -Y,R17
+000263 930a      	ST   -Y,R16
                  ;	s -> R17
                  ;	n -> R16
-000234 b71f      	IN   R17,63
+000264 b71f      	IN   R17,63
                  ; 0004 002A // Disable interrupts
                  ; 0004 002B #asm("cli")
-000235 94f8      	CLI
+000265 94f8      	CLI
                  ; 0004 002C 
                  ; 0004 002D // Disable and reset the timer/counter just to be sure
                  ; 0004 002E tc0_disable(&TCC0);
-000236 e0a0      	LDI  R26,LOW(2048)
-000237 e0b8      	LDI  R27,HIGH(2048)
-000238 dff5      	RCALL _tc0_disable
+000266 e0a0      	LDI  R26,LOW(2048)
+000267 e0b8      	LDI  R27,HIGH(2048)
+000268 dff5      	RCALL _tc0_disable
                  ; 0004 002F // Clock source: ClkPer/1
                  ; 0004 0030 TCC0.CTRLA=TC_CLKSEL_DIV1_gc;
-000239 e0e1      	LDI  R30,LOW(1)
-00023a 93e0 0800 	STS  2048,R30
+000269 e0e1      	LDI  R30,LOW(1)
+00026a 93e0 0800 	STS  2048,R30
                  ; 0004 0031 // Mode: Normal Operation, Overflow Int./Event on TOP
                  ; 0004 0032 // Compare/Capture on channel A: Off
                  ; 0004 0033 // Compare/Capture on channel B: Off
@@ -2324,50 +2381,50 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 0035 // Compare/Capture on channel D: Off
                  ; 0004 0036 TCC0.CTRLB=(0<<TC0_CCDEN_bp) | (0<<TC0_CCCEN_bp) | (0<<TC0_CCBEN_bp) | (0<<TC0_CCAEN_bp) |
                  ; 0004 0037 	TC_WGMODE_NORMAL_gc;
-00023c e0e0      	LDI  R30,LOW(0)
-00023d 93e0 0801 	STS  2049,R30
+00026c e0e0      	LDI  R30,LOW(0)
+00026d 93e0 0801 	STS  2049,R30
                  ; 0004 0038 // Capture event source: None
                  ; 0004 0039 // Capture event action: None
                  ; 0004 003A TCC0.CTRLD=TC_EVACT_OFF_gc | TC_EVSEL_OFF_gc;
-00023f 93e0 0803 	STS  2051,R30
+00026f 93e0 0803 	STS  2051,R30
                  ; 0004 003B 
                  ; 0004 003C // Set Timer/Counter in Normal mode
                  ; 0004 003D TCC0.CTRLE=TC_BYTEM_NORMAL_gc;
-000241 93e0 0804 	STS  2052,R30
+000271 93e0 0804 	STS  2052,R30
                  ; 0004 003E 
                  ; 0004 003F // Overflow interrupt: High Level
                  ; 0004 0040 // Error interrupt: Disabled
                  ; 0004 0041 TCC0.INTCTRLA=TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_HI_gc;
-000243 e0e3      	LDI  R30,LOW(3)
-000244 93e0 0806 	STS  2054,R30
+000273 e0e3      	LDI  R30,LOW(3)
+000274 93e0 0806 	STS  2054,R30
                  ; 0004 0042 
                  ; 0004 0043 // Compare/Capture channel A interrupt: Disabled
                  ; 0004 0044 // Compare/Capture channel B interrupt: Disabled
                  ; 0004 0045 // Compare/Capture channel C interrupt: Disabled
                  ; 0004 0046 // Compare/Capture channel D interrupt: Disabled
                  ; 0004 0047 TCC0.INTCTRLB=TC_CCDINTLVL_OFF_gc | TC_CCCINTLVL_OFF_gc | TC_CCBINTLVL_OFF_gc | TC_CCAINTLVL_OFF_gc;
-000246 e0e0      	LDI  R30,LOW(0)
-000247 93e0 0807 	STS  2055,R30
+000276 e0e0      	LDI  R30,LOW(0)
+000277 93e0 0807 	STS  2055,R30
                  ; 0004 0048 
                  ; 0004 0049 // High resolution extension: Off
                  ; 0004 004A HIRESC.CTRLA&= ~HIRES_HREN0_bm;
-000249 91e0 0890 	LDS  R30,2192
-00024b 7fee      	ANDI R30,0xFE
-00024c 93e0 0890 	STS  2192,R30
+000279 91e0 0890 	LDS  R30,2192
+00027b 7fee      	ANDI R30,0xFE
+00027c 93e0 0890 	STS  2192,R30
                  ; 0004 004B 
                  ; 0004 004C // Advanced Waveform Extension initialization
                  ; 0004 004D // Optimize for speed
                  ; 0004 004E #pragma optsize-
                  ; 0004 004F // Disable locking the AWEX configuration registers just to be sure
                  ; 0004 0050 n=MCU.AWEXLOCK & (~MCU_AWEXCLOCK_bm);
-00024e 91e0 0099 	LDS  R30,153
-000250 7fee      	ANDI R30,0xFE
-000251 2f0e      	MOV  R16,R30
+00027e 91e0 0099 	LDS  R30,153
+000280 7fee      	ANDI R30,0xFE
+000281 2f0e      	MOV  R16,R30
                  ; 0004 0051 CCP=CCP_IOREG_gc;
-000252 ede8      	LDI  R30,LOW(216)
-000253 bfe4      	OUT  0x34,R30
+000282 ede8      	LDI  R30,LOW(216)
+000283 bfe4      	OUT  0x34,R30
                  ; 0004 0052 MCU.AWEXLOCK=n;
-000254 9300 0099 	STS  153,R16
+000284 9300 0099 	STS  153,R16
                  ; 0004 0053 // Restore optimization for size if needed
                  ; 0004 0054 #pragma optsize_default
                  ; 0004 0055 
@@ -2375,8 +2432,8 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 0057 // Dead time insertion: Off
                  ; 0004 0058 AWEXC.CTRL=(0<<AWEX_PGM_bp) | (0<<AWEX_CWCM_bp) | (0<<AWEX_DTICCDEN_bp) | (0<<AWEX_DTICCCEN_bp) |
                  ; 0004 0059 	(0<<AWEX_DTICCBEN_bp) | (0<<AWEX_DTICCAEN_bp);
-000256 e0e0      	LDI  R30,LOW(0)
-000257 93e0 0880 	STS  2176,R30
+000286 e0e0      	LDI  R30,LOW(0)
+000287 93e0 0880 	STS  2176,R30
                  ; 0004 005A 
                  ; 0004 005B // Fault protection initialization
                  ; 0004 005C // Fault detection on OCD Break detection: On
@@ -2384,9 +2441,9 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 005E // Fault detection action: None (Fault protection disabled)
                  ; 0004 005F AWEXC.FDCTRL=(AWEXC.FDCTRL & (~(AWEX_FDDBD_bm | AWEX_FDMODE_bm | AWEX_FDACT_gm))) |
                  ; 0004 0060 	(0<<AWEX_FDDBD_bp) | (0<<AWEX_FDMODE_bp) | AWEX_FDACT_NONE_gc;
-000259 91e0 0883 	LDS  R30,2179
-00025b 7ee8      	ANDI R30,LOW(0xE8)
-00025c 93e0 0883 	STS  2179,R30
+000289 91e0 0883 	LDS  R30,2179
+00028b 7ee8      	ANDI R30,LOW(0xE8)
+00028c 93e0 0883 	STS  2179,R30
                  ; 0004 0061 // Fault detect events:
                  ; 0004 0062 // Event channel 0: Off
                  ; 0004 0063 // Event channel 1: Off
@@ -2397,63 +2454,63 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 0068 // Event channel 6: Off
                  ; 0004 0069 // Event channel 7: Off
                  ; 0004 006A AWEXC.FDEMASK=0b00000000;
-00025e e0e0      	LDI  R30,LOW(0)
-00025f 93e0 0882 	STS  2178,R30
+00028e e0e0      	LDI  R30,LOW(0)
+00028f 93e0 0882 	STS  2178,R30
                  ; 0004 006B // Make sure the fault detect flag is cleared
                  ; 0004 006C AWEXC.STATUS|=AWEXC.STATUS & AWEX_FDF_bm;
-000261 e8a4      	LDI  R26,LOW(2180)
-000262 e0b8      	LDI  R27,HIGH(2180)
-000263 2e0a      	MOV  R0,R26
-000264 91ac      	LD   R26,X
-000265 91e0 0884 	LDS  R30,2180
-000267 70e4      	ANDI R30,LOW(0x4)
-000268 2bea      	OR   R30,R26
-000269 2da0      	MOV  R26,R0
-00026a 93ec      	ST   X,R30
+000291 e8a4      	LDI  R26,LOW(2180)
+000292 e0b8      	LDI  R27,HIGH(2180)
+000293 2e0a      	MOV  R0,R26
+000294 91ac      	LD   R26,X
+000295 91e0 0884 	LDS  R30,2180
+000297 70e4      	ANDI R30,LOW(0x4)
+000298 2bea      	OR   R30,R26
+000299 2da0      	MOV  R26,R0
+00029a 93ec      	ST   X,R30
                  ; 0004 006D 
                  ; 0004 006E // Clear the interrupt flags
                  ; 0004 006F TCC0.INTFLAGS=TCC0.INTFLAGS;
-00026b 91e0 080c 	LDS  R30,2060
-00026d 93e0 080c 	STS  2060,R30
+00029b 91e0 080c 	LDS  R30,2060
+00029d 93e0 080c 	STS  2060,R30
                  ; 0004 0070 // Set Counter register
                  ; 0004 0071 TCC0.CNT=0x0000;
-00026f e0e0      	LDI  R30,LOW(0)
-000270 e0f0      	LDI  R31,HIGH(0)
-000271 93e0 0820 	STS  2080,R30
-000273 93f0 0821 	STS  2080+1,R31
+00029f e0e0      	LDI  R30,LOW(0)
+0002a0 e0f0      	LDI  R31,HIGH(0)
+0002a1 93e0 0820 	STS  2080,R30
+0002a3 93f0 0821 	STS  2080+1,R31
                  ; 0004 0072 // Set Period register
                  ; 0004 0073 TCC0.PER=0x07CF;
-000275 ecef      	LDI  R30,LOW(1999)
-000276 e0f7      	LDI  R31,HIGH(1999)
-000277 93e0 0826 	STS  2086,R30
-000279 93f0 0827 	STS  2086+1,R31
+0002a5 ecef      	LDI  R30,LOW(1999)
+0002a6 e0f7      	LDI  R31,HIGH(1999)
+0002a7 93e0 0826 	STS  2086,R30
+0002a9 93f0 0827 	STS  2086+1,R31
                  ; 0004 0074 // Set channel A Compare/Capture register
                  ; 0004 0075 TCC0.CCA=0x0000;
-00027b e0e0      	LDI  R30,LOW(0)
-00027c e0f0      	LDI  R31,HIGH(0)
-00027d 93e0 0828 	STS  2088,R30
-00027f 93f0 0829 	STS  2088+1,R31
+0002ab e0e0      	LDI  R30,LOW(0)
+0002ac e0f0      	LDI  R31,HIGH(0)
+0002ad 93e0 0828 	STS  2088,R30
+0002af 93f0 0829 	STS  2088+1,R31
                  ; 0004 0076 // Set channel B Compare/Capture register
                  ; 0004 0077 TCC0.CCB=0x0000;
-000281 93e0 082a 	STS  2090,R30
-000283 93f0 082b 	STS  2090+1,R31
+0002b1 93e0 082a 	STS  2090,R30
+0002b3 93f0 082b 	STS  2090+1,R31
                  ; 0004 0078 // Set channel C Compare/Capture register
                  ; 0004 0079 TCC0.CCC=0x0000;
-000285 93e0 082c 	STS  2092,R30
-000287 93f0 082d 	STS  2092+1,R31
+0002b5 93e0 082c 	STS  2092,R30
+0002b7 93f0 082d 	STS  2092+1,R31
                  ; 0004 007A // Set channel D Compare/Capture register
                  ; 0004 007B TCC0.CCD=0x0000;
-000289 93e0 082e 	STS  2094,R30
-00028b 93f0 082f 	STS  2094+1,R31
+0002b9 93e0 082e 	STS  2094,R30
+0002bb 93f0 082f 	STS  2094+1,R31
                  ; 0004 007C 
                  ; 0004 007D // Restore interrupts enabled/disabled state
                  ; 0004 007E SREG=s;
-00028d bf1f      	OUT  0x3F,R17
+0002bd bf1f      	OUT  0x3F,R17
                  ; 0004 007F }
                  _0x2060001:
-00028e 9109      	LD   R16,Y+
-00028f 9119      	LD   R17,Y+
-000290 9508      	RET
+0002be 9109      	LD   R16,Y+
+0002bf 9119      	LD   R17,Y+
+0002c0 9508      	RET
                  ; .FEND
                  ;
                  ;static uint32_t msCounter=0;
@@ -2463,36 +2520,36 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 0085 {
                  _tcc0_overflow_isr:
                  ; .FSTART _tcc0_overflow_isr
-000291 936a      	ST   -Y,R22
-000292 937a      	ST   -Y,R23
-000293 93aa      	ST   -Y,R26
-000294 93ba      	ST   -Y,R27
-000295 93ea      	ST   -Y,R30
-000296 93fa      	ST   -Y,R31
-000297 b7ef      	IN   R30,SREG
-000298 93ea      	ST   -Y,R30
+0002c1 936a      	ST   -Y,R22
+0002c2 937a      	ST   -Y,R23
+0002c3 93aa      	ST   -Y,R26
+0002c4 93ba      	ST   -Y,R27
+0002c5 93ea      	ST   -Y,R30
+0002c6 93fa      	ST   -Y,R31
+0002c7 b7ef      	IN   R30,SREG
+0002c8 93ea      	ST   -Y,R30
                  ; 0004 0086 // Write your code here
                  ; 0004 0087 	msCounter++;
-000299 e0a0      	LDI  R26,LOW(_msCounter_G004)
-00029a e2b8      	LDI  R27,HIGH(_msCounter_G004)
-00029b d075      	RCALL __GETD1P_INC
+0002c9 e0a6      	LDI  R26,LOW(_msCounter_G004)
+0002ca e2b8      	LDI  R27,HIGH(_msCounter_G004)
+0002cb d0a2      	RCALL __GETD1P_INC
                 +
-00029c 5fef     +SUBI R30 , LOW ( - 1 )
-00029d 4fff     +SBCI R31 , HIGH ( - 1 )
-00029e 4f6f     +SBCI R22 , BYTE3 ( - 1 )
-00029f 4f7f     +SBCI R23 , BYTE4 ( - 1 )
+0002cc 5fef     +SUBI R30 , LOW ( - 1 )
+0002cd 4fff     +SBCI R31 , HIGH ( - 1 )
+0002ce 4f6f     +SBCI R22 , BYTE3 ( - 1 )
+0002cf 4f7f     +SBCI R23 , BYTE4 ( - 1 )
                  	__SUBD1N -1
-0002a0 d075      	RCALL __PUTDP1_DEC
+0002d0 d0a2      	RCALL __PUTDP1_DEC
                  ; 0004 0088 }
-0002a1 91e9      	LD   R30,Y+
-0002a2 bfef      	OUT  SREG,R30
-0002a3 91f9      	LD   R31,Y+
-0002a4 91e9      	LD   R30,Y+
-0002a5 91b9      	LD   R27,Y+
-0002a6 91a9      	LD   R26,Y+
-0002a7 9179      	LD   R23,Y+
-0002a8 9169      	LD   R22,Y+
-0002a9 9518      	RETI
+0002d1 91e9      	LD   R30,Y+
+0002d2 bfef      	OUT  SREG,R30
+0002d3 91f9      	LD   R31,Y+
+0002d4 91e9      	LD   R30,Y+
+0002d5 91b9      	LD   R27,Y+
+0002d6 91a9      	LD   R26,Y+
+0002d7 9179      	LD   R23,Y+
+0002d8 9169      	LD   R22,Y+
+0002d9 9518      	RETI
                  ; .FEND
                  ;
                  ;// Timer/Counter TCC1 initialization
@@ -2507,157 +2564,218 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 0091 
                  ; 0004 0092 // Save interrupts enabled/disabled state
                  ; 0004 0093 s=SREG;
-0002aa 931a      	ST   -Y,R17
+0002da 931a      	ST   -Y,R17
                  ;	s -> R17
-0002ab b71f      	IN   R17,63
+0002db b71f      	IN   R17,63
                  ; 0004 0094 // Disable interrupts
                  ; 0004 0095 #asm("cli")
-0002ac 94f8      	CLI
+0002dc 94f8      	CLI
                  ; 0004 0096 
                  ; 0004 0097 // Disable and reset the timer/counter just to be sure
                  ; 0004 0098 tc1_disable(&TCC1);
-0002ad e4a0      	LDI  R26,LOW(2112)
-0002ae e0b8      	LDI  R27,HIGH(2112)
-0002af df80      	RCALL _tc1_disable
+0002dd e4a0      	LDI  R26,LOW(2112)
+0002de e0b8      	LDI  R27,HIGH(2112)
+0002df df80      	RCALL _tc1_disable
                  ; 0004 0099 // Clock source: ClkPer/256
                  ; 0004 009A TCC1.CTRLA=TC_CLKSEL_DIV256_gc;
-0002b0 e0e6      	LDI  R30,LOW(6)
-0002b1 93e0 0840 	STS  2112,R30
+0002e0 e0e6      	LDI  R30,LOW(6)
+0002e1 93e0 0840 	STS  2112,R30
                  ; 0004 009B // Mode: Normal Operation, Overflow Int./Event on TOP
                  ; 0004 009C // Compare/Capture on channel A: On
                  ; 0004 009D // Compare/Capture on channel B: Off
                  ; 0004 009E TCC1.CTRLB=(0<<TC1_CCBEN_bp) | (1<<TC1_CCAEN_bp) |
                  ; 0004 009F 	TC_WGMODE_NORMAL_gc;
-0002b3 e1e0      	LDI  R30,LOW(16)
-0002b4 93e0 0841 	STS  2113,R30
+0002e3 e1e0      	LDI  R30,LOW(16)
+0002e4 93e0 0841 	STS  2113,R30
                  ; 0004 00A0 // Capture event source: Event Channel 0
                  ; 0004 00A1 // Capture event action: Input Capture
                  ; 0004 00A2 TCC1.CTRLD=TC_EVACT_CAPT_gc | TC_EVSEL_CH0_gc;
-0002b6 e2e8      	LDI  R30,LOW(40)
-0002b7 93e0 0843 	STS  2115,R30
+0002e6 e2e8      	LDI  R30,LOW(40)
+0002e7 93e0 0843 	STS  2115,R30
                  ; 0004 00A3 
                  ; 0004 00A4 // Set Timer/Counter in Normal mode
                  ; 0004 00A5 TCC1.CTRLE=TC_BYTEM_NORMAL_gc;
-0002b9 e0e0      	LDI  R30,LOW(0)
-0002ba 93e0 0844 	STS  2116,R30
+0002e9 e0e0      	LDI  R30,LOW(0)
+0002ea 93e0 0844 	STS  2116,R30
                  ; 0004 00A6 
                  ; 0004 00A7 // Overflow interrupt: Disabled
                  ; 0004 00A8 // Error interrupt: Disabled
                  ; 0004 00A9 TCC1.INTCTRLA=TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_OFF_gc;
-0002bc 93e0 0846 	STS  2118,R30
+0002ec 93e0 0846 	STS  2118,R30
                  ; 0004 00AA 
                  ; 0004 00AB // Compare/Capture channel A interrupt: High Level
                  ; 0004 00AC // Compare/Capture channel B interrupt: Disabled
                  ; 0004 00AD TCC1.INTCTRLB=TC_CCBINTLVL_OFF_gc | TC_CCAINTLVL_HI_gc;
-0002be e0e3      	LDI  R30,LOW(3)
-0002bf 93e0 0847 	STS  2119,R30
+0002ee e0e3      	LDI  R30,LOW(3)
+0002ef 93e0 0847 	STS  2119,R30
                  ; 0004 00AE 
                  ; 0004 00AF // High resolution extension: Off
                  ; 0004 00B0 HIRESC.CTRLA&= ~HIRES_HREN1_bm;
-0002c1 91e0 0890 	LDS  R30,2192
-0002c3 7fed      	ANDI R30,0xFD
-0002c4 93e0 0890 	STS  2192,R30
+0002f1 91e0 0890 	LDS  R30,2192
+0002f3 7fed      	ANDI R30,0xFD
+0002f4 93e0 0890 	STS  2192,R30
                  ; 0004 00B1 
                  ; 0004 00B2 // Clear the interrupt flags
                  ; 0004 00B3 TCC1.INTFLAGS=TCC1.INTFLAGS;
-0002c6 91e0 084c 	LDS  R30,2124
-0002c8 93e0 084c 	STS  2124,R30
+0002f6 91e0 084c 	LDS  R30,2124
+0002f8 93e0 084c 	STS  2124,R30
                  ; 0004 00B4 // Set Counter register
                  ; 0004 00B5 TCC1.CNT=0x0000;
-0002ca e0e0      	LDI  R30,LOW(0)
-0002cb e0f0      	LDI  R31,HIGH(0)
-0002cc 93e0 0860 	STS  2144,R30
-0002ce 93f0 0861 	STS  2144+1,R31
+0002fa e0e0      	LDI  R30,LOW(0)
+0002fb e0f0      	LDI  R31,HIGH(0)
+0002fc 93e0 0860 	STS  2144,R30
+0002fe 93f0 0861 	STS  2144+1,R31
                  ; 0004 00B6 // Set Period register
                  ; 0004 00B7 TCC1.PER=0xFFFF;
-0002d0 efef      	LDI  R30,LOW(65535)
-0002d1 efff      	LDI  R31,HIGH(65535)
-0002d2 93e0 0866 	STS  2150,R30
-0002d4 93f0 0867 	STS  2150+1,R31
+000300 efef      	LDI  R30,LOW(65535)
+000301 efff      	LDI  R31,HIGH(65535)
+000302 93e0 0866 	STS  2150,R30
+000304 93f0 0867 	STS  2150+1,R31
                  ; 0004 00B8 // Set channel A Compare/Capture register
                  ; 0004 00B9 TCC1.CCA=0x0000;
-0002d6 e0e0      	LDI  R30,LOW(0)
-0002d7 e0f0      	LDI  R31,HIGH(0)
-0002d8 93e0 0868 	STS  2152,R30
-0002da 93f0 0869 	STS  2152+1,R31
+000306 e0e0      	LDI  R30,LOW(0)
+000307 e0f0      	LDI  R31,HIGH(0)
+000308 93e0 0868 	STS  2152,R30
+00030a 93f0 0869 	STS  2152+1,R31
                  ; 0004 00BA // Set channel B Compare/Capture register
                  ; 0004 00BB TCC1.CCB=0x0000;
-0002dc 93e0 086a 	STS  2154,R30
-0002de 93f0 086b 	STS  2154+1,R31
+00030c 93e0 086a 	STS  2154,R30
+00030e 93f0 086b 	STS  2154+1,R31
                  ; 0004 00BC 
                  ; 0004 00BD // Restore interrupts enabled/disabled state
                  ; 0004 00BE SREG=s;
-0002e0 bf1f      	OUT  0x3F,R17
+000310 bf1f      	OUT  0x3F,R17
                  ; 0004 00BF }
-0002e1 9119      	LD   R17,Y+
-0002e2 9508      	RET
+000311 9119      	LD   R17,Y+
+000312 9508      	RET
                  ; .FEND
+                 ;static uint16_t newCaptureCount=0;
+                 ;static uint8_t newCapture=0;
                  ;
                  ;// Timer/Counter TCC1 Compare/Capture A interrupt service routine
                  ;interrupt [TCC1_CCA_vect] void tcc1_compare_capture_a_isr(void)
-                 ; 0004 00C3 {
+                 ; 0004 00C5 {
                  _tcc1_compare_capture_a_isr:
                  ; .FSTART _tcc1_compare_capture_a_isr
-0002e3 93ea      	ST   -Y,R30
-0002e4 b7ef      	IN   R30,SREG
-0002e5 93ea      	ST   -Y,R30
-                 ; 0004 00C4 // Ensure that the Compare/Capture A interrupt flag is cleared
-                 ; 0004 00C5 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
-0002e6 91e0 084c 	LDS  R30,2124
-0002e8 71e0      	ANDI R30,LOW(0x10)
-0002e9 f029      	BREQ _0x80003
-0002ea 91e0 084c 	LDS  R30,2124
-0002ec 61e0      	ORI  R30,0x10
-0002ed 93e0 084c 	STS  2124,R30
-                 ; 0004 00C6 // Write your code here
-                 ; 0004 00C7 #asm("nop")
+000313 93ea      	ST   -Y,R30
+000314 93fa      	ST   -Y,R31
+000315 b7ef      	IN   R30,SREG
+000316 93ea      	ST   -Y,R30
+                 ; 0004 00C6 // Ensure that the Compare/Capture A interrupt flag is cleared
+                 ; 0004 00C7 if (TCC1.INTFLAGS & TC1_CCAIF_bm) TCC1.INTFLAGS|=TC1_CCAIF_bm;
+000317 91e0 084c 	LDS  R30,2124
+000319 71e0      	ANDI R30,LOW(0x10)
+00031a f029      	BREQ _0x80003
+00031b 91e0 084c 	LDS  R30,2124
+00031d 61e0      	ORI  R30,0x10
+00031e 93e0 084c 	STS  2124,R30
+                 ; 0004 00C8 // Write your code here
+                 ; 0004 00C9 //set the new captured counter value
+                 ; 0004 00CA newCaptureCount=TCC1.CNT;
                  _0x80003:
-0002ef 0000      	NOP
-                 ; 0004 00C8 }
-0002f0 91e9      	LD   R30,Y+
-0002f1 bfef      	OUT  SREG,R30
-0002f2 91e9      	LD   R30,Y+
-0002f3 9518      	RETI
+000320 91e0 0860 	LDS  R30,2144
+000322 91f0 0861 	LDS  R31,2144+1
+000324 93e0 280a 	STS  _newCaptureCount_G004,R30
+000326 93f0 280b 	STS  _newCaptureCount_G004+1,R31
+                 ; 0004 00CB //set a flag to indicate event
+                 ; 0004 00CC newCapture=1;
+000328 e0e1      	LDI  R30,LOW(1)
+000329 93e0 280c 	STS  _newCapture_G004,R30
+                 ; 0004 00CD }
+00032b 91e9      	LD   R30,Y+
+00032c bfef      	OUT  SREG,R30
+00032d 91f9      	LD   R31,Y+
+00032e 91e9      	LD   R30,Y+
+00032f 9518      	RETI
                  ; .FEND
+                 ;
+                 ;uint8_t wheelRotationCaptured(void)
+                 ; 0004 00D0 {
+                 _wheelRotationCaptured:
+                 ; .FSTART _wheelRotationCaptured
+                 ; 0004 00D1 	//check the flag to see , if a wheel roation happend
+                 ; 0004 00D2 	return newCapture;
+000330 91e0 280c 	LDS  R30,_newCapture_G004
+000332 9508      	RET
+                 ; 0004 00D3 }
+                 ; .FEND
+                 ;
+                 ;uint16_t getWheelRotationCount(void)
+                 ; 0004 00D6 {
+                 _getWheelRotationCount:
+                 ; .FSTART _getWheelRotationCount
+                 ; 0004 00D7 	unsigned char s;
+                 ; 0004 00D8 	uint16_t tempCount;
+                 ; 0004 00D9 	//save the interrupts enabled / disabled state
+                 ; 0004 00DA 	s=SREG;
+000333 d02b      	RCALL __SAVELOCR4
+                 ;	s -> R17
+                 ;	tempCount -> R18,R19
+000334 b71f      	IN   R17,63
+                 ; 0004 00DB 	//disable interrupts
+                 ; 0004 00DC 	#asm("cli")
+000335 94f8      	CLI
+                 ; 0004 00DD 	// save a copy of the count while the interrupts are disabled
+                 ; 0004 00DE 	tempCount=newCaptureCount;
+                +
+000336 9120 280a+LDS R18 , 0 + ( _newCaptureCount_G004 )
+000338 9130 280b+LDS R19 , 0 + ( _newCaptureCount_G004 ) + 1
+                 	__GETWRMN 18,19,0,_newCaptureCount_G004
+                 ; 0004 00DF 	//clear the flag as well
+                 ; 0004 00E0 	newCapture=0;
+00033a e0e0      	LDI  R30,LOW(0)
+00033b 93e0 280c 	STS  _newCapture_G004,R30
+                 ; 0004 00E1 	//restore the interrupts disabled
+                 ; 0004 00E2 	SREG=s;
+00033d bf1f      	OUT  0x3F,R17
+                 ; 0004 00E3 
+                 ; 0004 00E4 	return tempCount;
+00033e 01f9      	MOVW R30,R18
+00033f d024      	RCALL __LOADLOCR4
+000340 9624      	ADIW R28,4
+000341 9508      	RET
+                 ; 0004 00E5 }
+                 ; .FEND
+                 ;
                  ;uint32_t getTime(void){
-                 ; 0004 00C9 uint32_t getTime(void){
+                 ; 0004 00E7 uint32_t getTime(void){
                  _getTime:
                  ; .FSTART _getTime
-                 ; 0004 00CA 
-                 ; 0004 00CB 	unsigned char s;
-                 ; 0004 00CC 	uint32_t tempValHolder;
-                 ; 0004 00CD 	// Save interrupts enabled/disabled state
-                 ; 0004 00CE 	s=SREG;
-0002f4 9724      	SBIW R28,4
-0002f5 931a      	ST   -Y,R17
+                 ; 0004 00E8 
+                 ; 0004 00E9 	unsigned char s;
+                 ; 0004 00EA 	uint32_t tempValHolder;
+                 ; 0004 00EB 	// Save interrupts enabled/disabled state
+                 ; 0004 00EC 	s=SREG;
+000342 9724      	SBIW R28,4
+000343 931a      	ST   -Y,R17
                  ;	s -> R17
                  ;	tempValHolder -> Y+1
-0002f6 b71f      	IN   R17,63
-                 ; 0004 00CF 	// Disable interrupts
-                 ; 0004 00D0 	#asm("cli")
-0002f7 94f8      	CLI
-                 ; 0004 00D1 
-                 ; 0004 00D2 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
-                 ; 0004 00D3 	tempValHolder=msCounter;
-0002f8 91e0 2800 	LDS  R30,_msCounter_G004
-0002fa 91f0 2801 	LDS  R31,_msCounter_G004+1
-0002fc 9160 2802 	LDS  R22,_msCounter_G004+2
-0002fe 9170 2803 	LDS  R23,_msCounter_G004+3
+000344 b71f      	IN   R17,63
+                 ; 0004 00ED 	// Disable interrupts
+                 ; 0004 00EE 	#asm("cli")
+000345 94f8      	CLI
+                 ; 0004 00EF 
+                 ; 0004 00F0 	//copy the value of the interrupts disabled so the value is not corrupted by an untimely interrupt
+                 ; 0004 00F1 	tempValHolder=msCounter;
+000346 91e0 2806 	LDS  R30,_msCounter_G004
+000348 91f0 2807 	LDS  R31,_msCounter_G004+1
+00034a 9160 2808 	LDS  R22,_msCounter_G004+2
+00034c 9170 2809 	LDS  R23,_msCounter_G004+3
                 +
-000300 83e9     +STD Y + 1 , R30
-000301 83fa     +STD Y + 1 + 1 , R31
-000302 836b     +STD Y + 1 + 2 , R22
-000303 837c     +STD Y + 1 + 3 , R23
+00034e 83e9     +STD Y + 1 , R30
+00034f 83fa     +STD Y + 1 + 1 , R31
+000350 836b     +STD Y + 1 + 2 , R22
+000351 837c     +STD Y + 1 + 3 , R23
                  	__PUTD1S 1
-                 ; 0004 00D4 
-                 ; 0004 00D5 	//restore interrupts enabled/disabled state
-                 ; 0004 00D6 	SREG=s;
-000304 bf1f      	OUT  0x3F,R17
-                 ; 0004 00D7 	return tempValHolder;
-000305 8118      	LDD  R17,Y+0
-000306 9625      	ADIW R28,5
-000307 9508      	RET
-                 ; 0004 00D8 }
+                 ; 0004 00F2 
+                 ; 0004 00F3 	//restore interrupts enabled/disabled state
+                 ; 0004 00F4 	SREG=s;
+000352 bf1f      	OUT  0x3F,R17
+                 ; 0004 00F5 	return tempValHolder;
+000353 8118      	LDD  R17,Y+0
+000354 9625      	ADIW R28,5
+000355 9508      	RET
+                 ; 0004 00F6 }
                  ; .FEND
                  
                  	.CSEG
@@ -2667,38 +2785,85 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  	.CSEG
                  
                  	.DSEG
-                 _msCounter_G004:
+                 _turnOffLedTime_S0000000001:
 002800           	.BYTE 0x4
+                 _lastRotationCount_S0000000001:
+002804           	.BYTE 0x2
+                 _msCounter_G004:
+002806           	.BYTE 0x4
+                 _newCaptureCount_G004:
+00280a           	.BYTE 0x2
+                 _newCapture_G004:
+00280c           	.BYTE 0x1
                  
                  	.CSEG
                  ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:7 WORDS
                  SUBOPT_0x0:
-000308 931a      	ST   -Y,R17
-000309 930a      	ST   -Y,R16
-00030a 018d      	MOVW R16,R26
-00030b e0e0      	LDI  R30,LOW(0)
-00030c 93ec      	ST   X,R30
-00030d 9619      	ADIW R26,9
-00030e e0ec      	LDI  R30,LOW(12)
-00030f 93ec      	ST   X,R30
-000310 9508      	RET
+000356 931a      	ST   -Y,R17
+000357 930a      	ST   -Y,R16
+000358 018d      	MOVW R16,R26
+000359 e0e0      	LDI  R30,LOW(0)
+00035a 93ec      	ST   X,R30
+00035b 9619      	ADIW R26,9
+00035c e0ec      	LDI  R30,LOW(12)
+00035d 93ec      	ST   X,R30
+00035e 9508      	RET
                  
                  ;RUNTIME LIBRARY
                  
                  	.CSEG
+                 __SAVELOCR4:
+00035f 933a      	ST   -Y,R19
+                 __SAVELOCR3:
+000360 932a      	ST   -Y,R18
+                 __SAVELOCR2:
+000361 931a      	ST   -Y,R17
+000362 930a      	ST   -Y,R16
+000363 9508      	RET
+                 
+                 __LOADLOCR4:
+000364 813b      	LDD  R19,Y+3
+                 __LOADLOCR3:
+000365 812a      	LDD  R18,Y+2
+                 __LOADLOCR2:
+000366 8119      	LDD  R17,Y+1
+000367 8108      	LD   R16,Y
+000368 9508      	RET
+                 
+                 __SUBD21:
+000369 1bae      	SUB  R26,R30
+00036a 0bbf      	SBC  R27,R31
+00036b 0b86      	SBC  R24,R22
+00036c 0b97      	SBC  R25,R23
+00036d 9508      	RET
+                 
                  __GETD1P_INC:
-000311 91ed      	LD   R30,X+
-000312 91fd      	LD   R31,X+
-000313 916d      	LD   R22,X+
-000314 917d      	LD   R23,X+
-000315 9508      	RET
+00036e 91ed      	LD   R30,X+
+00036f 91fd      	LD   R31,X+
+000370 916d      	LD   R22,X+
+000371 917d      	LD   R23,X+
+000372 9508      	RET
                  
                  __PUTDP1_DEC:
-000316 937e      	ST   -X,R23
-000317 936e      	ST   -X,R22
-000318 93fe      	ST   -X,R31
-000319 93ee      	ST   -X,R30
-00031a 9508      	RET
+000373 937e      	ST   -X,R23
+000374 936e      	ST   -X,R22
+000375 93fe      	ST   -X,R31
+000376 93ee      	ST   -X,R30
+000377 9508      	RET
+                 
+                 __PUTD2S0:
+000378 83a8      	ST   Y,R26
+000379 83b9      	STD  Y+1,R27
+00037a 838a      	STD  Y+2,R24
+00037b 839b      	STD  Y+3,R25
+00037c 9508      	RET
+                 
+                 __CPD21:
+00037d 17ae      	CP   R26,R30
+00037e 07bf      	CPC  R27,R31
+00037f 0786      	CPC  R24,R22
+000380 0797      	CPC  R25,R23
+000381 9508      	RET
                  
                  ;END OF CODE MARKER
                  __END_OF_CODE:
@@ -2721,39 +2886,39 @@ counted separately from r26..r31 here.
 ATxmega128B1 register use summary:
 r0 :   2 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:   9 r17:  20 r18:   0 r19:   0 r20:   0 r21:   0 r22:   7 r23:   7 
-r24:   3 r25:   1 r26:  13 r27:   7 r28:   3 r29:   1 r30: 291 r31:  29 
-x  :  13 y  :  34 z  :   0 
-Registers used: 15 out of 35 (42.9%)
+r16:  11 r17:  24 r18:   4 r19:   3 r20:   0 r21:   0 r22:  16 r23:  15 
+r24:   8 r25:   5 r26:  18 r27:  11 r28:   6 r29:   1 r30: 308 r31:  41 
+x  :  13 y  :  58 z  :   0 
+Registers used: 17 out of 35 (48.6%)
 
 ATxmega128B1 instruction use summary:
 .lds  :   0 .lds.l:   0 .sts  :   0 .sts.l:   0 adc   :   0 add   :   0 
-adiw  :   2 and   :   0 andi  :  26 asr   :   0 bclr  :   0 bld   :   0 
+adiw  :   4 and   :   0 andi  :  24 asr   :   0 bclr  :   0 bld   :   0 
 brbc  :   0 brbs  :   0 brcc  :   0 brcs  :   0 break :   0 breq  :   3 
-brge  :   0 brhc  :   0 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 
-brlt  :   0 brmi  :   0 brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 
+brge  :   0 brhc  :   0 brhs  :   0 brid  :   0 brie  :   0 brlo  :   1 
+brlt  :   0 brmi  :   0 brne  :   1 brpl  :   0 brsh  :   0 brtc  :   0 
 brts  :   0 brvc  :   0 brvs  :   0 bset  :   0 bst   :   0 call  :   0 
-cbi   :   0 cbr   :   0 clc   :   0 clh   :   0 cli   :   6 cln   :   0 
-clr   :   1 cls   :   0 clt   :   0 clv   :   0 clz   :   0 com   :   0 
-cp    :   0 cpc   :   0 cpi   :   0 cpse  :   0 dec   :   0 des   :   0 
+cbi   :   0 cbr   :   0 clc   :   0 clh   :   0 cli   :   7 cln   :   0 
+clr   :   5 cls   :   0 clt   :   0 clv   :   0 clz   :   0 com   :   0 
+cp    :   1 cpc   :   3 cpi   :   1 cpse  :   0 dec   :   0 des   :   0 
 eicall:   0 eijmp :   0 elpm  :   0 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   6 inc   :   0 jmp   :  82 
-ld    :  17 ldd   :   1 ldi   :  73 lds   :  34 lpm   :   0 lsl   :   0 
-lsr   :   0 mov   :   6 movw  :   1 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   1 or    :   1 ori   :   5 out   :  18 pop   :   0 
-push  :   0 rcall :  13 ret   :   9 reti  :   2 rjmp  :   7 rol   :   0 
-ror   :   0 sbc   :   0 sbci  :   3 sbi   :   0 sbic  :   0 sbis  :   0 
-sbiw  :   2 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   7 inc   :   0 jmp   :  82 
+ld    :  19 ldd   :  10 ldi   :  75 lds   :  44 lpm   :   0 lsl   :   0 
+lsr   :   0 mov   :   6 movw  :   4 mul   :   0 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   0 or    :   1 ori   :   5 out   :  19 pop   :   0 
+push  :   0 rcall :  21 ret   :  16 reti  :   2 rjmp  :   6 rol   :   0 
+ror   :   0 sbc   :   3 sbci  :   6 sbi   :   0 sbic  :   0 sbis  :   0 
+sbiw  :   3 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :  25 std   :   4 sts   : 159 
-sub   :   0 subi  :   1 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 29 out of 119 (24.4%)
+sez   :   0 sleep :   0 spm   :   0 st    :  31 std   :  11 sts   : 169 
+sub   :   1 subi  :   2 swap  :   0 tst   :   0 wdr   :   0 
+Instructions used: 34 out of 119 (28.6%)
 
 ATxmega128B1 memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000636   1572     18   1590  139264   1.1%
-[.dseg] 0x002000 0x002804      0      4      4    8192   0.0%
+[.cseg] 0x000000 0x000704   1778     18   1796  139264   1.3%
+[.dseg] 0x002000 0x00280d      0     13     13    8192   0.2%
 [.eseg] 0x000000 0x000000      0      0      0    2048   0.0%
 
 Assembly complete, 0 errors, 0 warnings
