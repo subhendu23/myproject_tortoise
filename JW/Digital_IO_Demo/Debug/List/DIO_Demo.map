@@ -25,4 +25,3 @@ tcc0_init                                                                       
 tcc0_overflow_isr                                                                 0x00291     25
 tcc1_init                                                                         0x002AA     57
 tcc1_compare_capture_a_isr                                                        0x002E3     17
-getTime                                                                           0x002F4     20

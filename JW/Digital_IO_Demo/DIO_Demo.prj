@@ -129,8 +129,8 @@ UseEEPROMLocation0=1
 DisplayCodeSizeError=1
 RebuildAll=0
 LinkageInformationPresent=1
-COFFileTimeStamp=1310889050
-Build=5
+COFFileTimeStamp=1310899314
+Build=6
 GlobalVarAddr=10244
 EEPROMVarAddr=0
 [DefinedSymbolsDebug]
@@ -240,7 +240,7 @@ DisplayCodeSizeError=1
 RebuildAll=1
 LinkageInformationPresent=0
 COFFileTimeStamp=-1
-Build=5
+Build=6
 [DefinedSymbols]
 Count=0
 [CompilerAdvanced]
@@ -368,10 +368,10 @@ L13=Enhanced function parameters passing: Mode 2
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 5
-L18=7128 line(s) compiled
+L17=Build: 6
+L18=15195 line(s) compiled
 L19=No errors
-L20=2 warning(s)
+L20=No warnings
 L21=
 L22=Bit variables size: 0 byte(s)
 L23=
@@ -418,6 +418,12 @@ F1=C:\cvavreval\inc\xmega128b1.h
 F2=C:\cvavreval\inc\xmstruct.h
 F3=C:\cvavreval\inc\xmbits_b1.h
 F4=C:\cvavreval\inc\iobits.h
+[Header3]
+Files=4
+F1=C:\cvavreval\inc\xmega128b1.h
+F2=C:\cvavreval\inc\xmstruct.h
+F3=C:\cvavreval\inc\xmbits_b1.h
+F4=C:\cvavreval\inc\iobits.h
 [Header1]
 Files=12
 F1=C:\cvavreval\inc\xmega128b1.h
@@ -432,12 +438,6 @@ F9=clock_init.h
 F10=event_system_init.h
 F11=ports_init.h
 F12=timers_init.h
-[Header3]
-Files=4
-F1=C:\cvavreval\inc\xmega128b1.h
-F2=C:\cvavreval\inc\xmstruct.h
-F3=C:\cvavreval\inc\xmbits_b1.h
-F4=C:\cvavreval\inc\iobits.h
 [Header4]
 Files=5
 F1=C:\cvavreval\inc\xmega128b1.h

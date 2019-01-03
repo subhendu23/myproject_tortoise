@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Wed Jan 02 18:34:50 2019
+AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\List\DIO_Demo.asm Wed Jan 02 23:35:33 2019
 
                  
                  
@@ -2653,11 +2653,11 @@ AVRASM ver. 2.1.30  C:\SB_DEC_2018\myproject_tortoise\JW\Digital_IO_Demo\Debug\L
                  ; 0004 00D5 	//restore interrupts enabled/disabled state
                  ; 0004 00D6 	SREG=s;
 000304 bf1f      	OUT  0x3F,R17
-                 ; 0004 00D7 
-                 ; 0004 00D8 }
+                 ; 0004 00D7 	return tempValHolder;
 000305 8118      	LDD  R17,Y+0
 000306 9625      	ADIW R28,5
 000307 9508      	RET
+                 ; 0004 00D8 }
                  ; .FEND
                  
                  	.CSEG

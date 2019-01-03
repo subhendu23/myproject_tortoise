@@ -212,5 +212,5 @@ uint32_t getTime(void){
 	
 	//restore interrupts enabled/disabled state
 	SREG=s;
-	
+	return tempValHolder;
 }

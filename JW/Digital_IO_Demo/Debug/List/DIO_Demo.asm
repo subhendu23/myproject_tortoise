@@ -2633,11 +2633,11 @@ _getTime:
 ; 0004 00D5 	//restore interrupts enabled/disabled state
 ; 0004 00D6 	SREG=s;
 	OUT  0x3F,R17
-; 0004 00D7 
-; 0004 00D8 }
+; 0004 00D7 	return tempValHolder;
 	LDD  R17,Y+0
 	ADIW R28,5
 	RET
+; 0004 00D8 }
 ; .FEND
 
 	.CSEG
